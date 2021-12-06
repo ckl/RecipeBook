@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31829.152
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBook.WebApi", "RecipeBook.WebApi\RecipeBook.WebApi.csproj", "{91B2DAB5-D504-4F9C-85AB-1FCD8A62596A}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "RecipeBook.VueUI", "RecipeBook.VueUI\", "{50C2F7BC-F2EE-4486-924C-C9A5DAA5EDCC}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51466"
+		Debug.AspNetCompiler.PhysicalPath = "RecipeBook.VueUI\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51466\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51466"
+		Release.AspNetCompiler.PhysicalPath = "RecipeBook.VueUI\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51466\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51466"
+		SlnRelativePath = "RecipeBook.VueUI\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91B2DAB5-D504-4F9C-85AB-1FCD8A62596A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B2DAB5-D504-4F9C-85AB-1FCD8A62596A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B2DAB5-D504-4F9C-85AB-1FCD8A62596A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B2DAB5-D504-4F9C-85AB-1FCD8A62596A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50C2F7BC-F2EE-4486-924C-C9A5DAA5EDCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50C2F7BC-F2EE-4486-924C-C9A5DAA5EDCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50C2F7BC-F2EE-4486-924C-C9A5DAA5EDCC}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{50C2F7BC-F2EE-4486-924C-C9A5DAA5EDCC}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B83DEC9-7F49-4237-9393-BECA86FEFC0D}
+	EndGlobalSection
+EndGlobal
