@@ -22,15 +22,13 @@
 
 <script>
 	import axios from 'axios'
-	//import IngredientItem from '@/components/IngredientItem.vue'
 
 	export default {
 		name: 'Recipes',
-		//components: { IngredientItem },
 		data() {
 			return {
 				recipes: [],
-				url: 'https://test.contoso.com:5001'
+				url: 'https://test.contoso.com:5001',
 			};
 		},
 		methods: {
@@ -42,9 +40,6 @@
 				.then(response => {
 					console.log(response.data);
 					this.recipes = response.data;
-				})
-				.catch(error => {
-					console.log(error)
 				})
 		}
 	}

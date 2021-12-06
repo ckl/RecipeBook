@@ -13,6 +13,7 @@
 	- https://masteringjs.io/tutorials/vue/error-handling
 	- https://stackoverflow.com/questions/48656993/best-practice-in-error-handling-in-vuejs-with-vuex-and-axios
 	- https://stackoverflow.com/questions/57493516/uncaught-in-promise-undefined-vue-router
+	- https://stackoverflow.com/questions/52071212/how-to-implement-global-error-handling-in-vue
 - editable table instead of list of dropdowns
 	- https://muhimasri.com/blogs/create-an-editable-dynamic-table-with-bootstrap-vue/
 - cards w/pics of each recipe

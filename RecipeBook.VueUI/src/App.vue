@@ -21,12 +21,37 @@
 	</div>
 </template>
 
+<script>
+
+	import toast from '@/mixins/toast-mixin.js'
+
+	export default {
+		mixins: [toast],
+		mounted() {
+			// Handle promise exceptions
+			window.addEventListener('unhandledrejection', function (event) {
+				// event.promise contains the promise object
+				// event.reason contains the reason for the rejection
+				this.showToastError(event.reason.message, 'Network Error');
+			}.bind(this));
+
+			// Handle general exceptions
+			window.onerror = function (msg, url, line, col, error) {
+				//code to handle or report error goes here
+				console.log(msg);
+				console.log(line);
+				console.log(error);
+				this.showToastError(msg, 'Generic Error');
+			}
+		}
+	}
+</script>
+
 <style>
 	#app {
 		font-family: Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		/*text-align: center;*/
 		color: #2c3e50;
 	}
 
@@ -34,12 +59,12 @@
 		padding: 30px;
 	}
 
-		#nav a {
-			font-weight: bold;
-			color: #2c3e50;
-		}
+	#nav a {
+		font-weight: bold;
+		color: #2c3e50;
+	}
 
-			#nav a.router-link-exact-active {
-				color: #42b983;
-			}
+	#nav a.router-link-exact-active {
+		color: #42b983;
+	}
 </style>

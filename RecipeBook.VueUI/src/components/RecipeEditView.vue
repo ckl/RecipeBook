@@ -7,14 +7,26 @@
 				 dismissible>
 			{{ statusMsg }}
 		</b-alert>
+
+		<!--<b-alert :show="dismissCountDown"
+				 dismissible
+				 variant="warning"
+				 @dismissed="dismissCountDown=0"
+				 @dismiss-count-down="countDownChanged">
+			<p>This alert will dismiss after {{ dismissCountDown }} seconds...</p>
+			<b-progress variant="warning"
+						:max="dismissSecs"
+						:value="dismissCountDown"
+						height="4px"></b-progress>
+		</b-alert>-->
+
 		<div class="border p-2 my-3 bg-light rounded-3">
 			<b-container fluid>
 				<b-row class="my-1">
 					<b-col>
 						<span class="float-right">
-							<delete-recipe-modal 
-									:recipe-id="getRecipeID"
-									:recipe-name="recipe.name">
+							<delete-recipe-modal :recipe-id="getRecipeID"
+												 :recipe-name="recipe.name">
 							</delete-recipe-modal>
 						</span>
 						<h4>Recipe Info</h4>
