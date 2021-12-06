@@ -30,7 +30,7 @@
 		props: {
 			recipeName: String,
 			description: String,
-			cookTimeMinutes: String,
+			cookTimeMinutes: Number,
 			notes: String,
 			ingredientsText: String,
 			directionsText: String,

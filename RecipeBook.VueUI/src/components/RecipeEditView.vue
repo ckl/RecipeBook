@@ -1,24 +1,9 @@
 ﻿<template>
 	<div>
-		<b-alert v-model="showErrorAlert"
-				 class="position-fixed fixed-top m-0 rounded-0"
-				 style="z-index: 2000;"
-				 variant="danger"
-				 dismissible>
-			{{ statusMsg }}
-		</b-alert>
-
-		<!--<b-alert :show="dismissCountDown"
-				 dismissible
-				 variant="warning"
-				 @dismissed="dismissCountDown=0"
-				 @dismiss-count-down="countDownChanged">
-			<p>This alert will dismiss after {{ dismissCountDown }} seconds...</p>
-			<b-progress variant="warning"
-						:max="dismissSecs"
-						:value="dismissCountDown"
-						height="4px"></b-progress>
-		</b-alert>-->
+		<alert-dismissable :message="toast.message"
+						   :variant="toast.variant"
+						   :timer="toast.timer">
+		</alert-dismissable>
 
 		<div class="border p-2 my-3 bg-light rounded-3">
 			<b-container fluid>
@@ -111,53 +96,24 @@
 				<b-row class="my-1">
 					<b-col>
 						<b-button v-on:click="clickSaveRecipe" :disabled="isLoading" variant="success">Save Changes</b-button>
-						{{ statusMsg }}
 					</b-col>
 				</b-row>
 				<!-- TODO: add validation -->
 			</b-container>
 		</div>
-
-		<!--<div class="p-4 my-3 bg-light rounded-3 form-control">
-		<h5>Ingredients</h5>
-		<ul>
-			<li is="ingredient-item" v-for="(ingredient, index) in ingredientsToShow"
-				:key="ingredient.selected.id"
-				:item="ingredient.selected"
-				:index="index"
-				:value="ingredient.selected.text"
-				:ingredient-list="ingredientList"
-				:ingredient-details="ingredient"
-				v-on:remove="ingredientsToShow.splice(index, 1)"
-				class="form-control">
-			</li>
-		</ul>
-
-		<button v-on:click="$emit('add-ingredient')" class="form-control">Add Ingredient</button>
-		<new-ingredient-modal></new-ingredient-modal>
-
-		<div class="p-4 my-3 bg-light rounded-3">
-			<h5>Directions</h5>
-			<textarea class="form-control" v-model="recipe.directions" rows="10" cols="80"></textarea>
-
-			<div>
-				<button v-on:click="clickSaveRecipe" :disabled="isLoading" class="btn btn-primary form-control">Save</button>
-				<span v-if="statusMsg">{{ statusMsg }}</span>
-			</div>
-		</div>
-	</div>-->
 	</div>
 </template>
 
 <script>
 	import axios from 'axios'
+	import AlertDismissable from '@/components/Alert.Dismissable.vue'
 	import IngredientItem from '@/components/IngredientItem.vue'
 	import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
 	import NewIngredientModal from '@/components/NewIngredientModal.vue'
 
 	export default {
 		name: 'RecipeEditView',
-		components: { DeleteRecipeModal, IngredientItem, NewIngredientModal },
+		components: { AlertDismissable, DeleteRecipeModal, IngredientItem, NewIngredientModal },
 		props: {
 			recipeID: Number,
 			ingredientList: Array,
@@ -175,8 +131,11 @@
 					cookTimeMinutes: 0,
 					notes: ''
 				},
-				statusMsg: '',		// TODO: same
-				showErrorAlert: false,
+				toast: {
+					msg: '',
+					variant: '',
+					timer: 0
+				},
 				url: 'https://test.contoso.com:5001'
 			};
 		},
@@ -184,8 +143,18 @@
 			error(err) {
 				this.isLoading = false;
 				console.log(err);
-				this.showErrorAlert = true;
-				this.statusMsg = 'Error - check the console';
+				//this.toast = {
+				//	message: "Error saving the recipe",
+				//	variant: 'danger',
+				//	timer: 10
+				//};
+			},
+			resetToast() {
+				this.toast = {
+					message: '',
+					variant: '',
+					timer: 0
+				};
 			},
 			clickDeleteRecipe() {
 
@@ -207,6 +176,8 @@
 				if (hasErrors) {
 					return;
 				}
+
+				this.resetToast();
 
 				this.isLoading = true;
 				this.statusMsg = 'Loading...';
@@ -233,7 +204,7 @@
 				}).then(() => {
 					//console.log(response);
 					self.isLoading = false;
-					self.statusMsg = 'Success';
+					//self.statusMsg = 'Success';
 					self.$emit('saved-recipe', self.recipe);
 					// TODO: fix this
 					if (!this.$route.params.id) {
@@ -247,6 +218,7 @@
 				return new Promise((resolve) => {
 					this.$bvToast.toast("Updated", {
 						title: 'Success',
+						variant: 'success',
 						autoHideDelay: 5000,
 					});
 					resolve();

@@ -16,12 +16,17 @@ Vue.config.errorHandler = function (err, vm, info) {
 	// handle error
 	// `info` is a Vue-specific error info, e.g. which lifecycle hook
 	// the error was found in. Only available in 2.2.0+
+	console.error(`Error: ${err.toString()}\nInfo: ${info}`);
 	console.log(err);
-	this.$bvToast.toast("Vue Error", {
-		title: info,
-		variant: 'danger',
-		autoHideDelay: 10000,
-	});
+	//this.$bvToast.toast("Vue Error", {
+	//	title: info,
+	//	variant: 'danger',
+	//	autoHideDelay: 10000,
+	//});
+}
+
+Vue.config.warnHandler = function (msg, vm, trace) {
+	console.warn(`Warn: ${msg}\nTrace: ${trace}`);
 }
 
 new Vue({

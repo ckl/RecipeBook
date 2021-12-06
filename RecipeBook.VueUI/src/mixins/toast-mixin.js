@@ -7,7 +7,12 @@
                 autoHideDelay: 10000,
             });
         },
-        showToastError: function (message, title = 'Error') {
+        showToastError: function (params) {
+            var message = params.message,
+                title = params.title || 'Error',
+                ex = params.ex;
+
+            console.error(`Error: ${message}\nDetails: ${ex}`);
             this.$bvToast.toast(title, {
                 title: message,
                 variant: 'danger',

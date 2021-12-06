@@ -32,7 +32,9 @@
 			window.addEventListener('unhandledrejection', function (event) {
 				// event.promise contains the promise object
 				// event.reason contains the reason for the rejection
-				this.showToastError(event.reason.message, 'Network Error');
+				if (event && event.reason && event.reason.message) {
+					this.showToastError({ message: event.reason.message, title: 'Network Error', ex: event });
+				}
 			}.bind(this));
 
 			// Handle general exceptions
@@ -41,7 +43,7 @@
 				console.log(msg);
 				console.log(line);
 				console.log(error);
-				this.showToastError(msg, 'Generic Error');
+				this.showToastError({ message: msg, title: 'Generic Error', ex: error });
 			}
 		}
 	}

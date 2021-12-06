@@ -9,9 +9,12 @@
 
 <script>
     import axios from 'axios'
+	import toast from '@/mixins/toast-mixin.js'
+
 
     export default {
         name: 'DeleteRecipeModal',
+        mixins: [toast],
         props: {
             recipeID: Number,
             recipeName: String,
@@ -20,35 +23,30 @@
         data() {
             return {
                 showModal: false,
-                statusMsg: ''
             };
         },
         methods: {
-    //        _buildErrorMsg () {
-				//return this.ingredientDetails.error.join('; ');
-    //        },
-			error(err) {
-				console.log(err);
-				//this.showErrorAlert = true;
-				this.statusMsg = 'Error - check the console';
-			},
 			showConfirmDelete() {
 				this.boxTwo = ''
-				this.$bvModal.msgBoxConfirm('Please confirm that you want to delete "' + this.recipeName + '".', {
-					title: 'Please Confirm',
-					okVariant: 'danger',
-					okTitle: 'YES',
-					cancelTitle: 'NO',
-					footerClass: 'p-2',
-					hideHeaderClose: false,
-					centered: true
-				})
-					.then((resp) => {
+                this.$bvModal.msgBoxConfirm('Please confirm that you want to delete "' + this.recipeName + '".', {
+                    title: 'Please Confirm',
+                    okVariant: 'danger',
+                    okTitle: 'YES',
+                    cancelTitle: 'NO',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                })
+                    .then((resp) => {
                         if (resp === true) {
-							this.deleteRecipe().then(this.redirect).then(this.makeToast).catch(this.error);
-						}
-					})
-					.catch(this.error)
+                            this.deleteRecipe()
+                                .then(this.redirect)
+                                .then(this.makeToast)
+                                .catch((error) => {
+                                    this.showToastError({ message: `Error deleting ${this.recipeName}`, ex: error })
+                                });
+                        }
+                    });
             },
             makeToast() {
                 return new Promise((resolve) => {
@@ -69,23 +67,17 @@
                 console.log(process.env);
 
                 // TODO: using params is a hack. figure out why this.recipeID is undefined
-                this.statusMsg = 'Deleting...';
                 return axios.delete(process.env.VUE_APP_RecipeBookApi + 'Recipes/' + this.$route.params.id)
                     .then(() => {
-                        this.statusMsg = 'Done';
                         this.$router.push('Recipes')
                     });
 			}
         },
         computed: {
-            //buildErrorMsg() {
-            //    return this._buildErrorMsg();
-            //},
 		}
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
