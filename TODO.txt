@@ -1,0 +1,24 @@
+﻿- move to PostgreSQL
+- add export feature
+	- export/sync to google drive
+- remove options from selects as they're being chosen
+	- or just look into select2
+		- https://codesandbox.io/s/github/vuejs/vuejs.org/tree/master/src/v2/examples/vue-20-wrapper-component?from-embed=&file=/index.html
+- make tabs into components
+	- make more stuff into components
+- form validation
+	- https://bootstrap-vue.org/docs/reference/validation
+- error handling / toasts (look into vue state/contexts/mutations)
+	- https://medium.com/js-dojo/error-exception-handling-in-vue-js-application-6c26eeb6b3e4
+	- https://masteringjs.io/tutorials/vue/error-handling
+	- https://stackoverflow.com/questions/48656993/best-practice-in-error-handling-in-vuejs-with-vuex-and-axios
+	- https://stackoverflow.com/questions/57493516/uncaught-in-promise-undefined-vue-router
+- editable table instead of list of dropdowns
+	- https://muhimasri.com/blogs/create-an-editable-dynamic-table-with-bootstrap-vue/
+- cards w/pics of each recipe
+- accordion the ingredients (and other sections?)
+- 
+
+BUGS:
+------
+- fix adding multiple ingredients to a recipe
