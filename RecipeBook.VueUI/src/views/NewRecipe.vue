@@ -18,7 +18,6 @@
 	import axios from 'axios'
 	import RecipeEditView from '@/components/RecipeEditView.vue'
 
-
 	export default {
 		name: 'Recipe',
 		components: { RecipeEditView },
