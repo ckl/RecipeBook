@@ -26,7 +26,8 @@ namespace RecipeBook.WebApi.Controllers
 		[HttpGet("{recipeID}")]
 		public async Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
 		{
-			return await RecipeIngredientsDAL.Get(recipeID);
+			IEnumerable<RecipeIngredientDto> rtrn = await RecipeIngredientsDAL.Get(recipeID);
+			return rtrn;
 		}
 
 		// POST api/<RecipeIngredientsController>
@@ -34,10 +35,19 @@ namespace RecipeBook.WebApi.Controllers
 		public void Post(IEnumerable<RecipeIngredient> ingredients)
 		{
 			// TODO: fix this
-			if (ingredients?.Count() > 0)
+			if (ingredients == null || !ingredients.Any())
 			{
-				RecipeIngredientsDAL.Upsert(ingredients.ToList()[0].RecipeID, ingredients);
+				return;
 			}
+
+			int recipeId = ingredients.FirstOrDefault().RecipeID;
+
+			if (ingredients.Any(x => x.RecipeID <= 0))
+			{
+				throw new ArgumentException("recipeId cannot be 0");
+			}
+
+			RecipeIngredientsDAL.Upsert(recipeId, ingredients);
 		}
 
 		// PUT api/<RecipeIngredientsController>/5

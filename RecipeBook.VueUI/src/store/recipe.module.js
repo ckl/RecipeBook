@@ -45,6 +45,18 @@ export const actions = {
 		context.commit("fetchRecipeIngredientsEnd", data);
 		return data;
 	},
+	async createRecipe({ state }) {
+		return RecipeService.createRecipe(state.currentRecipe);
+	},
+	async updateRecipe({ state }) {
+		return RecipeService.updateRecipe(state.currentRecipe.recipeID, state.currentRecipe);
+	},
+	async createRecipeIngredients({ state }) {
+		state.currentRecipeIngredients.forEach((el, i, arr) => {
+			arr[i].recipeID = state.currentRecipe.recipeID;
+		});
+		return RecipeService.createRecipeIngredients(state.currentRecipeIngredients);
+	},
 	async recipeResetState({ commit }) {
 		commit("recipeResetStateCalled");
 	}
@@ -64,6 +76,9 @@ export const mutations = {
 	fetchRecipeIngredientsEnd(state, data) {
 		//state.currentRecipe = state.currentRecipe || {};
 		state.currentRecipeIngredients = data;
+	},
+	createRecipeEnd(state, data) {
+		state.currentRecipe = data;
 	},
 	recipeResetStateCalled(state) {
 		for (let s in state) {

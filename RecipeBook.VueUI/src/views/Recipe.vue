@@ -50,10 +50,11 @@
 			...mapGetters({
 				currentRecipe: 'recipe/currentRecipe',
 				ingredientsToShow: 'recipe/currentRecipeIngredients',
+				ingredientList: 'recipe/ingredients'
 			}),
-			ingredientList() {
-				return this.$store.getters.ingredients;
-			},
+			//ingredientList() {
+			//	return this.$store.getters.ingredients;
+			//},
 			ingredientsText() {
 				if (! Array.isArray(this.ingredientsToShow)) {
 					return;

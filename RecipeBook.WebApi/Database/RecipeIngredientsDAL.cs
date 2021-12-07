@@ -64,8 +64,8 @@ namespace RecipeBook.WebApi.Database
 						Quantity = i.Quantity,
 						Notes = i.Notes
 					});
-					context.SaveChanges();
 				}
+				context.SaveChanges();
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace RecipeBook.WebApi.Database
 						 {
 							 IngredientID = i.IngredientID,
 							 Name = i.Name,
-							 Notes = i.Notes,
+							 Notes = ri.Notes,
 							 RecipeID = recipeID,
 							 Quantity = ri.Quantity
 						 });

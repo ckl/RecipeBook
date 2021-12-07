@@ -10,6 +10,16 @@ const ApiService = {
 		return axios.get(`${resource}/${slug}`).catch(error => {
 			throw new Error(`ApiService.get || Resource: ${resource} || Error: ${error}`);
 		})
+	},
+	post(resource, params) {
+		return axios.post(resource, params).catch(error => {
+			throw new Error(`ApiService.post || Resource: ${resource} || Error: ${error}`);
+		});
+	},
+	put(resource, slug, params) {
+		return axios.put(`${resource}/${slug}`, params).catch(error => {
+			throw new Error(`ApiService.put || Resource: ${resource} || Error: ${error}`);
+		});
 	}
 };
 
@@ -27,5 +37,14 @@ export const RecipeService = {
 	},
 	getRecipeIngredients(slug) {
 		return ApiService.get('RecipeIngredients', slug);
+	},
+	createRecipe(params) {
+		return ApiService.post('Recipes', params);
+	},
+	updateRecipe(slug, params) {
+		return ApiService.put('Recipes', slug, params)
+	},
+	createRecipeIngredients(params) {
+		return ApiService.post('RecipeIngredients', params);
 	}
 };

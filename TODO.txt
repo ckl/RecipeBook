@@ -21,7 +21,22 @@
 - add option to load recipe in either text or edit view
 - use lodash with vuex for updating nested objects
 	- https://stackoverflow.com/questions/51672475/how-to-properly-deal-with-editable-complex-object-nested-with-vuex
+- only enable Save button when a field becomes dirty
 
 BUGS:
 ------
+- creating a new recipe doesn't navigate to new page or show toaster
+	- recipeID isn't being set on state after create???
+- create global util for toasts (https://vuejs.org/v2/cookbook/adding-instance-properties.html)
 - fix adding multiple ingredients to a recipe
+- Text View ingredients don't update after saving
+- hide Delete button from edit-control on create page
+- validation:
+	- RecipeIngredients:
+		- JS: error if an ingredient dropdown or quantity is empty
+		- C#: check required fields and throw exeption before deleting existing RecipeIngredients
+
+LINKS:
+------
+Best practices for managing state with vuex
+	https://gist.github.com/DawidMyslak/2b046cca5959427e8fb5c1da45ef7748

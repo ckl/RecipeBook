@@ -1,10 +1,5 @@
 ﻿<template>
 	<div>
-		<alert-dismissable :message="toast.message"
-						   :variant="toast.variant"
-						   :timer="toast.timer">
-		</alert-dismissable>
-
 		<div class="border p-2 my-3 bg-light rounded-3">
 			<b-container fluid>
 				<b-row class="my-1">
@@ -97,60 +92,32 @@
 						<b-button v-on:click="clickSaveRecipe" :disabled="isLoading" variant="success">Save Changes</b-button>
 					</b-col>
 				</b-row>
-				<!-- TODO: add validation -->
 			</b-container>
 		</div>
 	</div>
 </template>
 
 <script>
-	import axios from 'axios'
-	import showToastWarn from '@/mixins/toast.mixin'
 	import { mapGetters } from 'vuex'
-	import AlertDismissable from '@/components/Alert.Dismissable.vue'
 	import IngredientItem from '@/components/IngredientItem.vue'
 	import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
 	import NewIngredientModal from '@/components/NewIngredientModal.vue'
+	import toast from '@/mixins/toast.mixin'
 
 	export default {
 		name: 'RecipeEditView',
-		components: { AlertDismissable, DeleteRecipeModal, IngredientItem, NewIngredientModal },
+		components: { DeleteRecipeModal, IngredientItem, NewIngredientModal },
 		props: {
 			recipeID: Number,
 			ingredientsToShow: Array,
 		},
-		mixins: [showToastWarn],
+		mixins: [ toast ],
 		data() {
 			return {
-				isLoading: false,	// TODO: bring over here
-				toast: {
-					msg: '',
-					variant: '',
-					timer: 0
-				},
-				url: 'https://test.contoso.com:5001'
+				isLoading: false,	// prevent double clicking on buttons
 			};
 		},
 		methods: {
-			//error(err) {
-			//	this.isLoading = false;
-			//	console.log(err);
-			//	//this.toast = {
-			//	//	message: "Error saving the recipe",
-			//	//	variant: 'danger',
-			//	//	timer: 10
-			//	//};
-			//},
-			//resetToast() {
-			//	this.toast = {
-			//		message: '',
-			//		variant: '',
-			//		timer: 0
-			//	};
-			//},
-			//clickDeleteRecipe() {
-
-			//},
 			clickSaveRecipe() {
 				// TODO: move form validation somewhere else
 				let errors = [];
@@ -173,36 +140,31 @@
 				this.isLoading = true;
 				this.statusMsg = 'Loading...';
 
-				var self = this;
-				self.upsertRecipe(this.recipe).then((resp) => {
-
-					if (resp.data) {
-						self.recipe.recipeID = resp.data.recipeID;
-					}
-					// get all the ingredients
-					var data = self.ingredientsToShow.map(x => {
-						return {
-							RecipeID: this.recipe.recipeID,
-							IngredientID: x.ingredientID,
-							Quantity: x.quantity,
-							Notes: x.notes
-						};
+				let self = this;
+				let action = typeof this.recipe.recipeID === 'undefined' ? "recipe/createRecipe" : "recipe/updateRecipe"
+				this.$store
+					.dispatch(action)
+					.then(() => this.$store.dispatch('recipe/createRecipeIngredients'))
+					.then(() => {
+						self.isLoading = false;
+						// TODO: fix this
+						//if (parseInt(this.$route.params.id) > 0) {
+						//	return this.makeToast();
+						//}
+						//return this.redirect().then(this.makeToast).catch(this.error);
+						var x = self.recipe.recipeID;
+						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
+							self.showToastSuccess('Updated');
+						}
+						else {
+							this.$router.push({ name: 'Recipe', params: { id: x } }, () => {
+								self.showToastSuccess('Updated');
+							});
+						}
+					})
+					.catch((error) => {
+						this.showToastError({ex: error, message: 'Error saving stuff'})
 					});
-
-					// save
-					return axios.post(self.url + '/api/RecipeIngredients', data);
-				}).then(() => {
-					//console.log(response);
-					self.isLoading = false;
-					//self.statusMsg = 'Success';
-					//self.$emit('saved-recipe', self.recipe);
-					// TODO: fix this
-					if (!this.recipe.recipeID) {
-						return this.redirect().then(this.makeToast).catch(this.error);
-					}
-					return this.makeToast();
-				})
-				.catch(this.error);
 			},
 			makeToast() {
 				return new Promise((resolve) => {
@@ -215,22 +177,11 @@
 				});
 			},
 			redirect() {
+				// TODO: redirect to created page
 				return new Promise((resolve) => {
 					this.$router.push({ name: 'Recipes'/*, params: { id: this.recipeID }*/ });
 					resolve();
 				});
-			},
-			upsertRecipe(recipe) {
-				if (recipe.recipeID > 0) {
-					return axios.put(this.url + '/api/Recipes/' + recipe.recipeID, recipe);
-				}
-				else if (this.$route.params.id > 0) {
-					recipe.recipeID = this.$route.params.id;
-					return axios.put(this.url + '/api/Recipes/' + recipe.recipeID, recipe);
-				}
-				else {
-					return axios.post(this.url + '/api/Recipes', recipe);
-				}
 			},
 		},
 		computed: {
