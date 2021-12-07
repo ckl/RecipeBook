@@ -20,7 +20,6 @@
 
 				<b-tab title="Edit View">
 					<recipe-edit-view :recipe-id="recipeID"
-									  :ingredient-list="ingredientList"
 									  :ingredients-to-show="ingredientsToShow"
 									  v-on:add-ingredient="addIngredient"
 									  v-on:saved-recipe="syncObjs"></recipe-edit-view>
@@ -33,6 +32,8 @@
 
 <script>
 	import axios from 'axios'
+	//import { mapGetters } from 'vuex'
+	//import store from '@/store'
 	import toast from '@/mixins/toast-mixin'
 	import RecipeEditView from '@/components/RecipeEditView.vue'
 	import RecipeTextView from '@/components/RecipeTextView.vue'
@@ -45,15 +46,12 @@
 		mixins: [toast],
 		data() {
 			return {
-				isLoading: true,
 				recipeID: -1,
 				recipeName: '',
 				description: '',
 				cookTimeMinutes: 0,
 				notes: '',
 				directionsText: '',
-				ingredientsText: '',
-				ingredientList: [],
 				ingredientsToShow: [],
 				url: 'https://test.contoso.com:5001',
 				showErrorAlert: false,
@@ -76,21 +74,6 @@
 				this.notes = recipe.notes;
 				this.directionsText = recipe.directions;
 			},
-			getIngredients() {
-				return new Promise((resolve, reject) => {
-					axios.get(this.url + '/api/Ingredient')
-						.then(response => {
-							this.ingredientList = response.data.map(x => {
-								return { id: x.ingredientID, text: x.name };
-							});
-							this.ingredientList.unshift({ id: -1, text: 'Select an option...' })
-							resolve();
-						})
-						.catch((error) => {
-							reject({ msg: 'Error loading ingredient list', ex: error });
-						});
-				});
-			},
 			getRecipe(id) {
 				return new Promise((resolve, reject) => {
 					if (parseInt(id) <= 0) {
@@ -108,7 +91,7 @@
 							resolve();
 						})
 						.catch((error) => {
-							reject({ msg: `Error retrieving recipe with ID: ${id}`, ex: error });
+							reject(error);
 						});
 				});
 			},
@@ -119,28 +102,29 @@
 							if (response.data && Array.isArray(response.data)) {
 								response.data.forEach((ingredient) => {
 									this.ingredientsToShow.push({
-										selected: this.ingredientList.find(x => x.id == ingredient.ingredientID),
+										selected: this.ingredientList.find(x => x.ingredientID == ingredient.ingredientID),
 										ingredientList: this.ingredientList,
 										quantity: ingredient.quantity,
 										notes: ingredient.notes,
 										error: []
 									})
 								});
-
-								this.ingredientsText = this.getIngredientsText;	// TODO: is this needed?
 							}
 							resolve();
 						})
 						.catch((error) => {
-							reject({ msg: `Error retrieving recipe ingredients for recipeID: ${id}`, ex: error });
+							reject(error);
 						});
 				});
 			}
 		},
 		computed: {
-			getIngredientsText() {
+			ingredientList() {
+				return this.$store.getters.ingredients;
+			},
+			ingredientsText() {
 				var ingredients = this.ingredientsToShow.map(x => {
-					var text = x.selected.text + ' - ' + x.quantity;
+					var text = x.selected.name + ' - ' + x.quantity;
 					if (x.notes) {
 						text += ' (' + x.notes + ')';
 					}
@@ -150,19 +134,14 @@
 			}
 		},
 		created() {
-			this.ingredientsText = this.getIngredientsText
 		},
 		mounted() {
-			var self = this;
 			this.recipeID = this.$route.params.id;
-			this.getIngredients()
-				.then(() => this.getRecipe(this.recipeID))
+
+			this.getRecipe(this.recipeID)
 				.then(() => this.getRecipeIngredients(this.recipeID))
-				.then(() => {
-					self.isLoading = false;
-				})
-				.catch((error) => {
-					this.showToastError({ message: error.msg, ex: error.ex });
+				.catch(error => {
+					this.showToastError(error)
 				});
 		},
 	}

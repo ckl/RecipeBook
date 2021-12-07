@@ -64,11 +64,10 @@
 						<!-- https://www.creative-tim.com/learning-lab/bootstrap-vue/list-group/argon-dashboard -->
 						<ul>
 							<li is="ingredient-item" v-for="(ingredient, index) in ingredientsToShow"
-								:key="ingredient.selected.id"
+								:key="ingredient.selected.ingredientID"
 								:item="ingredient.selected"
 								:index="index"
-								:value="ingredient.selected.text"
-								:ingredient-list="ingredientList"
+								:value="ingredient.selected.name"
 								:ingredient-details="ingredient"
 								v-on:remove="ingredientsToShow.splice(index, 1)">
 							</li>
@@ -116,7 +115,6 @@
 		components: { AlertDismissable, DeleteRecipeModal, IngredientItem, NewIngredientModal },
 		props: {
 			recipeID: Number,
-			ingredientList: Array,
 			ingredientsToShow: Array,
 		},
 		data() {
@@ -163,7 +161,7 @@
 				var hasErrors = false;
 				for (var i = 0; i < this.ingredientsToShow.length; ++i) {
 					this.ingredientsToShow[i].error = []
-					if (!this.ingredientsToShow[i].selected || !this.ingredientsToShow[i].selected.id || this.ingredientsToShow[i].selected.id <= 0) {
+					if (!this.ingredientsToShow[i].selected || !this.ingredientsToShow[i].selected.ingredientID || this.ingredientsToShow[i].selected.ingredientID <= 0) {
 						hasErrors = true;
 						this.ingredientsToShow[i].error.push('Missing ingredient');
 					}
@@ -193,7 +191,7 @@
 					var data = self.ingredientsToShow.map(x => {
 						return {
 							RecipeID: this.recipe.recipeID,
-							IngredientID: x.selected.id,
+							IngredientID: x.selected.ingredientID,
 							Quantity: x.quantity,
 							Notes: x.notes
 						};
@@ -207,7 +205,7 @@
 					//self.statusMsg = 'Success';
 					self.$emit('saved-recipe', self.recipe);
 					// TODO: fix this
-					if (!this.$route.params.id) {
+					if (!this.recipeID) {
 						return this.redirect().then(this.makeToast).catch(this.error);
 					}
 					return this.makeToast();
@@ -226,7 +224,7 @@
 			},
 			redirect() {
 				return new Promise((resolve) => {
-					this.$router.push({ name: 'Recipe', params: { id: this.recipeID } });
+					this.$router.push({ name: 'Recipes'/*, params: { id: this.recipeID }*/ });
 					resolve();
 				});
 			},

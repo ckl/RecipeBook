@@ -1,37 +1,12 @@
 <template>
     <div class="container">
-        <!--<div class="row">
-            <div class="col-sm-4">
-                <select v-model="ingredientDetails.selected">
-                    <option v-for="(ingredient, index) in ingredientList"
-                            :key="index"
-                            class="form-control"
-                            :value="ingredient">-->
-                            <!--:value="ingredient.ingredientID"-->
-                        <!--{{ ingredient.text }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" placeholder="Quantity" v-model="ingredientDetails.quantity" />
-            </div>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" placeholder="Notes" v-model="ingredientDetails.notes" />
-            </div>
-            <div class="col-sm-4">
-                <button v-on:click="$emit('remove')">Remove</button>
-                <span v-if="ingredientDetails.error.length">
-                    {{ buildErrorMsg }}
-                </span>
-                </div>
-            </div>-->
         <b-row class="my-1">
             <b-input-group>
                 <template #prepend>
-                    <b-form-select v-model="ingredientDetails.selected.id"
+                    <b-form-select v-model="ingredientDetails.selected.ingredientID"
                                    :options="ingredientList"
-                                   value-field="id"
-                                   text-field="text"></b-form-select>
+                                   value-field="ingredientID"
+                                   text-field="name"></b-form-select>
                 </template>
 
 				<b-form-input v-model="ingredientDetails.quantity" placeholder="Quantity"></b-form-input>
@@ -51,7 +26,6 @@
     export default {
         name: 'IngredientItem',
         props: {
-            ingredientList: Array,
             ingredientDetails: {
                 quantity: String,
                 notes: String,
@@ -72,6 +46,9 @@
             buildErrorMsg() {
                 return this._buildErrorMsg();
             },
+            ingredientList() {
+                return this.$store.getters.ingredients;
+			}
         },
         mounted() {
 		}

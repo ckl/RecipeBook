@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+
+import ApiService from './services/api.service'
+ApiService.init();
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -30,6 +34,7 @@ Vue.config.warnHandler = function (msg, vm, trace) {
 }
 
 new Vue({
-  router,
-  render: h => h(App)
+	router,
+	store,
+	render: h => h(App)
 }).$mount('#app')

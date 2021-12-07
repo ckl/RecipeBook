@@ -28,7 +28,7 @@
 		data() {
 			return {
 				recipes: [],
-				url: 'https://test.contoso.com:5001',
+				url: 'https://localhost:5001',
 			};
 		},
 		methods: {

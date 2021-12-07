@@ -45,6 +45,11 @@
 				console.log(error);
 				this.showToastError({ message: msg, title: 'Generic Error', ex: error });
 			}
+
+			this.$store.dispatch('fetchIngredients')
+				.catch(error => {
+					this.showToastError({ message: 'Initialize Error - fetching ingredients', ex: error });
+				});
 		}
 	}
 </script>
