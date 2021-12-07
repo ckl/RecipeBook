@@ -48,9 +48,6 @@
         },
         data() {
             return {
-                //name: '',
-                //notes: '',
-                //error: ''
             };
         },
         methods: {

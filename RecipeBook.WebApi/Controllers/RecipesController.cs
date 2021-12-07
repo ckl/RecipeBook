@@ -50,11 +50,11 @@ namespace RecipeBook.WebApi.Controllers
 			{
 				RecipeDAL.Put(recipe);
 			}
-			catch (DbUpdateConcurrencyException ex)
+			catch (DbUpdateConcurrencyException)
 			{
 
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 
 			}
@@ -67,7 +67,6 @@ namespace RecipeBook.WebApi.Controllers
 		public void Delete(int id)
 		{
 			RecipeDAL.Delete(id);
-			//return NoContent();
 		}
 	}
 }

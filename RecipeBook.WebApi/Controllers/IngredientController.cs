@@ -51,11 +51,11 @@ namespace RecipeBook.WebApi.Controllers
 			{
 				IngredientDAL.Put(ingredient);
 			}
-			catch (DbUpdateConcurrencyException ex)
+			catch (DbUpdateConcurrencyException)
 			{
 
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 
 			}

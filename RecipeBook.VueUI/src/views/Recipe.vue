@@ -1,40 +1,31 @@
 ﻿<template>
 	<div class="container">
-		<!--<div class="p-4 my-3 bg-light rounded-3">
-			<h2>Mary mother of Joseph</h2>
-			<p>What is going on in today's world? Nobody knows. Except the one who does. But maybe he doesn't even know</p>
-		</div>-->
-
 		<div class="row border p-4 my-3 bg-light rounded-3">
 
-			<h3>{{ recipeName }}</h3>
+			<h3>{{ currentRecipe.name }}</h3>
 			<b-tabs class="w-100">
 				<b-tab title="Text View">
-					<recipe-text-view :recipe-name="recipeName"
-									  :description="description"
-									  :cook-time-minutes="cookTimeMinutes"
-									  :notes="notes"
+					<recipe-text-view :recipe-name="currentRecipe.name"
+									  :description="currentRecipe.description"
+									  :cook-time-minutes="currentRecipe.cookTimeMinutes"
+									  :notes="currentRecipe.notes"
 									  :ingredients-text="ingredientsText"
-									  :directions-text="directionsText"></recipe-text-view>
+									  :directions-text="currentRecipe.directions"></recipe-text-view>
 				</b-tab>
 
 				<b-tab title="Edit View">
-					<recipe-edit-view :recipe-id="recipeID"
+					<recipe-edit-view :recipe-id="currentRecipe.recipeID"
 									  :ingredients-to-show="ingredientsToShow"
-									  v-on:add-ingredient="addIngredient"
-									  v-on:saved-recipe="syncObjs"></recipe-edit-view>
+									  v-on:add-ingredient="addIngredient"></recipe-edit-view>
 				</b-tab>
 			</b-tabs>
-
 		</div>
 	</div>
 </template>
 
 <script>
-	import axios from 'axios'
-	//import { mapGetters } from 'vuex'
-	//import store from '@/store'
-	import toast from '@/mixins/toast-mixin'
+	import { mapGetters } from 'vuex'
+	import toast from '@/mixins/toast.mixin'
 	import RecipeEditView from '@/components/RecipeEditView.vue'
 	import RecipeTextView from '@/components/RecipeTextView.vue'
 
@@ -46,85 +37,29 @@
 		mixins: [toast],
 		data() {
 			return {
-				recipeID: -1,
-				recipeName: '',
-				description: '',
-				cookTimeMinutes: 0,
-				notes: '',
-				directionsText: '',
-				ingredientsToShow: [],
-				url: 'https://test.contoso.com:5001',
-				showErrorAlert: false,
-				statusMsg: ''
 			};
 		},
 		methods: {
 			addIngredient() {
 				this.ingredientsToShow.push({
 					ingredientList: this.ingredientList,
-					selected: {},
-					error: []
 				});
 			},
-			syncObjs(recipe) {
-				this.recipeID = recipe.recipeID;
-				this.recipeName = recipe.name;
-				this.description = recipe.description;
-				this.cookTimeMinutes = recipe.cookTimeMinutes;
-				this.notes = recipe.notes;
-				this.directionsText = recipe.directions;
-			},
-			getRecipe(id) {
-				return new Promise((resolve, reject) => {
-					if (parseInt(id) <= 0) {
-						return resolve();
-					}
-
-					axios.get(this.url + '/api/Recipes/' + id)
-						.then(response => {
-							this.recipeID = response.data.recipeID;
-							this.recipeName = response.data.name;
-							this.description = response.data.description;
-							this.cookTimeMinutes = response.data.cookTimeMinutes;
-							this.notes = response.data.notes;
-							this.directionsText = response.data.directions;
-							resolve();
-						})
-						.catch((error) => {
-							reject(error);
-						});
-				});
-			},
-			getRecipeIngredients(id) {
-				return new Promise((resolve, reject) => {
-					axios.get(this.url + '/api/RecipeIngredients/' + id)
-						.then(response => {
-							if (response.data && Array.isArray(response.data)) {
-								response.data.forEach((ingredient) => {
-									this.ingredientsToShow.push({
-										selected: this.ingredientList.find(x => x.ingredientID == ingredient.ingredientID),
-										ingredientList: this.ingredientList,
-										quantity: ingredient.quantity,
-										notes: ingredient.notes,
-										error: []
-									})
-								});
-							}
-							resolve();
-						})
-						.catch((error) => {
-							reject(error);
-						});
-				});
-			}
 		},
 		computed: {
+			...mapGetters({
+				currentRecipe: 'recipe/currentRecipe',
+				ingredientsToShow: 'recipe/currentRecipeIngredients',
+			}),
 			ingredientList() {
 				return this.$store.getters.ingredients;
 			},
 			ingredientsText() {
+				if (! Array.isArray(this.ingredientsToShow)) {
+					return;
+				}
 				var ingredients = this.ingredientsToShow.map(x => {
-					var text = x.selected.name + ' - ' + x.quantity;
+					var text = x.name + ' - ' + x.quantity;
 					if (x.notes) {
 						text += ' (' + x.notes + ')';
 					}
@@ -136,10 +71,8 @@
 		created() {
 		},
 		mounted() {
-			this.recipeID = this.$route.params.id;
-
-			this.getRecipe(this.recipeID)
-				.then(() => this.getRecipeIngredients(this.recipeID))
+			this.$store.dispatch('recipe/fetchRecipe', this.$route.params.id)
+				.then(this.$store.dispatch('recipe/fetchRecipeIngredients', this.$route.params.id))
 				.catch(error => {
 					this.showToastError(error)
 				});

@@ -18,12 +18,13 @@ namespace RecipeBook.WebApi.Controllers
 		[HttpGet]
 		public IEnumerable<string> Get()
 		{
-			return new string[] { "value1", "value2" };
+			//return new string[] { "value1", "value2" };
+			throw new NotImplementedException();
 		}
 
 		// GET api/<RecipeIngredientsController>/5
 		[HttpGet("{recipeID}")]
-		public async Task<IEnumerable<RecipeIngredient>> Get(int recipeID)
+		public async Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
 		{
 			return await RecipeIngredientsDAL.Get(recipeID);
 		}
@@ -43,12 +44,14 @@ namespace RecipeBook.WebApi.Controllers
 		[HttpPut("{id}")]
 		public void Put(int id, [FromBody] string value)
 		{
+			throw new NotImplementedException();
 		}
 
 		// DELETE api/<RecipeIngredientsController>/5
 		[HttpDelete("{id}")]
 		public void Delete(int id)
 		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -18,7 +18,9 @@
 	- https://muhimasri.com/blogs/create-an-editable-dynamic-table-with-bootstrap-vue/
 - cards w/pics of each recipe
 - accordion the ingredients (and other sections?)
-- 
+- add option to load recipe in either text or edit view
+- use lodash with vuex for updating nested objects
+	- https://stackoverflow.com/questions/51672475/how-to-properly-deal-with-editable-complex-object-nested-with-vuex
 
 BUGS:
 ------

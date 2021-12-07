@@ -21,25 +21,27 @@
 </template>
 
 <script>
-	import axios from 'axios'
+	import { mapGetters } from 'vuex'
+	import toast from '@/mixins/toast.mixin'
 
 	export default {
 		name: 'Recipes',
+		mixins: [toast],
 		data() {
 			return {
-				recipes: [],
-				url: 'https://localhost:5001',
 			};
 		},
 		methods: {
 		},
 		computed: {
+			...mapGetters({
+				recipes: 'recipe/recipes'
+			})
 		},
 		mounted() {
-			axios.get(this.url + '/api/Recipes')
-				.then(response => {
-					console.log(response.data);
-					this.recipes = response.data;
+			this.$store.dispatch('recipe/fetchRecipes')
+				.catch(error => {
+					this.showToastError({ message: 'Failed to get recipe list', ex: error });
 				})
 		}
 	}

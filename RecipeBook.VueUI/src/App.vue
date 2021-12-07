@@ -23,7 +23,7 @@
 
 <script>
 
-	import toast from '@/mixins/toast-mixin.js'
+	import toast from '@/mixins/toast.mixin.js'
 
 	export default {
 		mixins: [toast],
@@ -46,7 +46,7 @@
 				this.showToastError({ message: msg, title: 'Generic Error', ex: error });
 			}
 
-			this.$store.dispatch('fetchIngredients')
+			this.$store.dispatch('ingredient/fetchIngredients')
 				.catch(error => {
 					this.showToastError({ message: 'Initialize Error - fetching ingredients', ex: error });
 				});

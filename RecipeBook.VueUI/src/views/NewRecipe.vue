@@ -29,6 +29,10 @@
 				statusMsg: ''
 			};
 		},
+		async beforeRouteUpdate(to, from, next) {
+			await this.$store.dispatch('recipe/recipeResetState');
+			return next();
+		},
 		methods: {
 			addIngredient() {
 				this.ingredientsToShow.push({
@@ -46,6 +50,7 @@
 		created() {
 		},
 		mounted() {
+			this.$store.dispatch('recipe/recipeResetState');
 		}
 	}
 

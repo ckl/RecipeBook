@@ -10,7 +10,7 @@
 				<b-row class="my-1">
 					<b-col>
 						<span class="float-right">
-							<delete-recipe-modal :recipe-id="getRecipeID"
+							<delete-recipe-modal :recipe-id="recipe.recipeID"
 												 :recipe-name="recipe.name">
 							</delete-recipe-modal>
 						</span>
@@ -64,10 +64,10 @@
 						<!-- https://www.creative-tim.com/learning-lab/bootstrap-vue/list-group/argon-dashboard -->
 						<ul>
 							<li is="ingredient-item" v-for="(ingredient, index) in ingredientsToShow"
-								:key="ingredient.selected.ingredientID"
-								:item="ingredient.selected"
+								:key="ingredient.ingredientID"
+								:item="ingredient"
 								:index="index"
-								:value="ingredient.selected.name"
+								:value="ingredient.name"
 								:ingredient-details="ingredient"
 								v-on:remove="ingredientsToShow.splice(index, 1)">
 							</li>
@@ -105,6 +105,8 @@
 
 <script>
 	import axios from 'axios'
+	import showToastWarn from '@/mixins/toast.mixin'
+	import { mapGetters } from 'vuex'
 	import AlertDismissable from '@/components/Alert.Dismissable.vue'
 	import IngredientItem from '@/components/IngredientItem.vue'
 	import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
@@ -117,18 +119,10 @@
 			recipeID: Number,
 			ingredientsToShow: Array,
 		},
+		mixins: [showToastWarn],
 		data() {
 			return {
 				isLoading: false,	// TODO: bring over here
-				recipName: this.recipeName,
-				recipe: {
-					recipeID: this.recipeID,
-					name: '',
-					description: '',
-					directions: '',
-					cookTimeMinutes: 0,
-					notes: ''
-				},
 				toast: {
 					msg: '',
 					variant: '',
@@ -138,50 +132,48 @@
 			};
 		},
 		methods: {
-			error(err) {
-				this.isLoading = false;
-				console.log(err);
-				//this.toast = {
-				//	message: "Error saving the recipe",
-				//	variant: 'danger',
-				//	timer: 10
-				//};
-			},
-			resetToast() {
-				this.toast = {
-					message: '',
-					variant: '',
-					timer: 0
-				};
-			},
-			clickDeleteRecipe() {
+			//error(err) {
+			//	this.isLoading = false;
+			//	console.log(err);
+			//	//this.toast = {
+			//	//	message: "Error saving the recipe",
+			//	//	variant: 'danger',
+			//	//	timer: 10
+			//	//};
+			//},
+			//resetToast() {
+			//	this.toast = {
+			//		message: '',
+			//		variant: '',
+			//		timer: 0
+			//	};
+			//},
+			//clickDeleteRecipe() {
 
-			},
+			//},
 			clickSaveRecipe() {
-				var hasErrors = false;
-				for (var i = 0; i < this.ingredientsToShow.length; ++i) {
-					this.ingredientsToShow[i].error = []
-					if (!this.ingredientsToShow[i].selected || !this.ingredientsToShow[i].selected.ingredientID || this.ingredientsToShow[i].selected.ingredientID <= 0) {
-						hasErrors = true;
-						this.ingredientsToShow[i].error.push('Missing ingredient');
-					}
-					if (!this.ingredientsToShow[i].quantity) {
-						hasErrors = true;
-						this.ingredientsToShow[i].error.push('Missing quantity');
-					}
-				}
+				// TODO: move form validation somewhere else
+				let errors = [];
+				let ingredients = this.ingredientsToShow.filter(x => {
+					return x.ingredientID && x.ingredientID > 0;
+				});
 
-				if (hasErrors) {
+				ingredients.forEach(x => {
+					if (!x.quantity) {
+						errors.push({ ingredientID: x.ingredientID, message: `Missing quantity for ${x.name}` });
+					}
+				});
+
+				if (errors.length > 0) {
+					let msg = errors.join('\r\n');
+					this.showToastWarn(msg);
 					return;
 				}
-
-				this.resetToast();
 
 				this.isLoading = true;
 				this.statusMsg = 'Loading...';
 
 				var self = this;
-				this.recipe.recipeID = this.getRecipeID;
 				self.upsertRecipe(this.recipe).then((resp) => {
 
 					if (resp.data) {
@@ -191,7 +183,7 @@
 					var data = self.ingredientsToShow.map(x => {
 						return {
 							RecipeID: this.recipe.recipeID,
-							IngredientID: x.selected.ingredientID,
+							IngredientID: x.ingredientID,
 							Quantity: x.quantity,
 							Notes: x.notes
 						};
@@ -203,9 +195,9 @@
 					//console.log(response);
 					self.isLoading = false;
 					//self.statusMsg = 'Success';
-					self.$emit('saved-recipe', self.recipe);
+					//self.$emit('saved-recipe', self.recipe);
 					// TODO: fix this
-					if (!this.recipeID) {
+					if (!this.recipe.recipeID) {
 						return this.redirect().then(this.makeToast).catch(this.error);
 					}
 					return this.makeToast();
@@ -242,31 +234,11 @@
 			},
 		},
 		computed: {
-			getRecipeID() {
-				if (this.recipeID > 0) {
-					return this.recipeID;
-				}
-				else if (this.$route.params.id > 0) {
-					return this.$route.params.id;
-				}
-
-				return 0;
-			},
+			...mapGetters({
+				recipe: 'recipe/currentRecipe'
+			}),
 		},
 		mounted() {
-			if (this.$route.params.id > 0) {
-				axios.get(this.url + '/api/Recipes/' + this.$route.params.id)
-					.then(response => {
-						this.recipe.name = response.data.name;
-						this.recipe.description = response.data.description;
-						this.recipe.cookTimeMinutes = response.data.cookTimeMinutes;
-						this.recipe.notes = response.data.notes;
-						this.recipe.directions = response.data.directions;
-						//console.log(response)
-					})
-					.catch(this.error);
-			}
-
 		}
 	}
 

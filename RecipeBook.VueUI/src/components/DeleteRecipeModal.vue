@@ -9,7 +9,7 @@
 
 <script>
     import axios from 'axios'
-	import toast from '@/mixins/toast-mixin.js'
+	import toast from '@/mixins/toast.mixin.js'
 
 
     export default {

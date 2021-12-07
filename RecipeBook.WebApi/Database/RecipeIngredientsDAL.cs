@@ -69,11 +69,25 @@ namespace RecipeBook.WebApi.Database
 			}
 		}
 
-		public static async Task<IEnumerable<RecipeIngredient>> Get(int recipeID)
+		public static async Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
 		{
 			using (var context = new MyDbContext())
 			{
-				return await context.RecipeIngredients.Where(x => x.RecipeID == recipeID).ToListAsync();
+				var x = (from i in context.Ingredients
+						 join ri in context.RecipeIngredients
+						 on i.IngredientID equals ri.IngredientID
+						 where ri.RecipeID == recipeID
+						 select new RecipeIngredientDto
+						 {
+							 IngredientID = i.IngredientID,
+							 Name = i.Name,
+							 Notes = i.Notes,
+							 RecipeID = recipeID,
+							 Quantity = ri.Quantity
+						 });
+
+				return await x.ToListAsync();
+				//return await context.RecipeIngredients.Where(x => x.RecipeID == recipeID).ToListAsync();
 			}
 		}
 
