@@ -1,5 +1,11 @@
 ﻿import { IngredientService } from "@/services/api.service"
-
+import {
+	GET_INGREDIENTS
+} from './actions.type'
+import {
+	GET_INGREDIENTS_START,
+	GET_INGREDIENTS_END
+} from './mutations.type';
 const initialState = {
 	isLoading: false,
 	ingredients: []
@@ -17,19 +23,19 @@ const getters = {
 };
 
 export const actions = {
-	async fetchIngredients(context, slug) {
-		context.commit("fetchIngredientsStart")
+	async [GET_INGREDIENTS](context, slug) {
+		context.commit(GET_INGREDIENTS_START)
 		const { data } = await IngredientService.get(slug);
-		context.commit("fetchIngredientsEnd", data);
+		context.commit(GET_INGREDIENTS_END, data);
 		return data;
 	}
 };
 
 export const mutations = {
-	fetchIngredientsStart(state) {
+	[GET_INGREDIENTS_START](state) {
 		state.isLoading = true;
 	},
-	fetchIngredientsEnd(state, data) {
+	[GET_INGREDIENTS_END](state, data) {
 		state.ingredients = data;
 		state.isLoading = false;
 	}

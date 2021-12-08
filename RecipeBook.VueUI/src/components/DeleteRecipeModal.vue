@@ -43,7 +43,7 @@
                                 .then(this.redirect)
                                 .then(this.makeToast)
                                 .catch((error) => {
-                                    this.showToastError({ message: `Error deleting ${this.recipeName}`, ex: error })
+									this.$toastError({ message: `Error deleting ${this.recipeName}`, ex: error })
                                 });
                         }
                     });

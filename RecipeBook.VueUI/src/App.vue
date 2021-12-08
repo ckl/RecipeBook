@@ -24,6 +24,9 @@
 <script>
 
 	import toast from '@/mixins/toast.mixin.js'
+	import {
+		GET_INGREDIENTS
+	} from '@/store/actions.type'
 
 	export default {
 		mixins: [toast],
@@ -33,7 +36,7 @@
 				// event.promise contains the promise object
 				// event.reason contains the reason for the rejection
 				if (event && event.reason && event.reason.message) {
-					this.showToastError({ message: event.reason.message, title: 'Network Error', ex: event });
+					this.$toastError({ message: event.reason.message, title: 'Network Error', ex: event });
 				}
 			}.bind(this));
 
@@ -43,12 +46,12 @@
 				console.log(msg);
 				console.log(line);
 				console.log(error);
-				this.showToastError({ message: msg, title: 'Generic Error', ex: error });
+				this.$toastError({ message: msg, title: 'Generic Error', ex: error });
 			}
 
-			this.$store.dispatch('ingredient/fetchIngredients')
+			this.$store.dispatch(`ingredient/${GET_INGREDIENTS}`)
 				.catch(error => {
-					this.showToastError({ message: 'Initialize Error - fetching ingredients', ex: error });
+					this.$toastError({ message: 'Initialize Error - fetching ingredients', ex: error });
 				});
 		}
 	}

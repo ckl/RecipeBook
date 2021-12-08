@@ -1,5 +1,22 @@
 ﻿import Vue from "vue";
 import { RecipeService } from "@/services/api.service"
+import {
+	GET_RECIPE,
+	GET_RECIPES,
+	GET_RECIPE_INGREDIENTS,
+	RECIPE_CREATE,
+	RECIPE_UPDATE,
+	RECIPE_INGREDIENTS_CREATE,
+	RECIPE_RESET_STATE
+} from "./actions.type";
+import {
+	GET_RECIPES_START,
+	GET_RECIPES_END,
+	GET_RECIPE_END,
+	GET_RECIPE_INGREDIENTS_END,
+	RECIPE_CREATE_END,
+	RECIPE_RESET_STATE_CALLED,
+} from "./mutations.type";
 
 const initialState = {
 	isLoading: false,
@@ -26,61 +43,62 @@ const getters = {
 };
 
 export const actions = {
-	async fetchRecipes(context) {
-		context.commit("fetchRecipesStart");
-		const { data } = await RecipeService.get();
-		context.commit("fetchRecipesEnd", data);
-		return data;
-	},
-	async fetchRecipe(context, slug) {
+	async [GET_RECIPE](context, slug) {
 		const { data } = await RecipeService.get(slug);
-		context.commit("fetchRecipeEnd", data);
+		context.commit(GET_RECIPE_END, data);
 		return data;
 	},
-	async fetchRecipeIngredients(context, slug) {
+	async [GET_RECIPES](context) {
+		context.commit(GET_RECIPES_START);
+		const { data } = await RecipeService.get();
+		context.commit(GET_RECIPES_END, data);
+		return data;
+	},
+	async [GET_RECIPE_INGREDIENTS](context, slug) {
 		if (!slug) {
 			return;
 		}
 		const { data } = await RecipeService.getRecipeIngredients(slug);
-		context.commit("fetchRecipeIngredientsEnd", data);
+		context.commit(GET_RECIPE_INGREDIENTS_END, data);
 		return data;
 	},
-	async createRecipe({ state }) {
-		return RecipeService.createRecipe(state.currentRecipe);
+	async [RECIPE_CREATE](context) {
+		const { data } = await RecipeService.createRecipe(state.currentRecipe);
+		context.commit(RECIPE_CREATE_END, data);
+		return data;
 	},
-	async updateRecipe({ state }) {
+	async [RECIPE_UPDATE]({ state }) {
 		return RecipeService.updateRecipe(state.currentRecipe.recipeID, state.currentRecipe);
 	},
-	async createRecipeIngredients({ state }) {
+	async [RECIPE_INGREDIENTS_CREATE]({ state }) {
 		state.currentRecipeIngredients.forEach((el, i, arr) => {
 			arr[i].recipeID = state.currentRecipe.recipeID;
 		});
 		return RecipeService.createRecipeIngredients(state.currentRecipeIngredients);
 	},
-	async recipeResetState({ commit }) {
-		commit("recipeResetStateCalled");
+	async [RECIPE_RESET_STATE]({ commit }) {
+		commit(RECIPE_RESET_STATE_CALLED);
 	}
 };
 
 export const mutations = {
-	fetchRecipesStart(state) {
+	[GET_RECIPES_START](state) {
 		state.isLoading = true;
 	},
-	fetchRecipesEnd(state, data) {
+	[GET_RECIPES_END](state, data) {
 		state.recipes = data;
 		state.isLoading = false;
 	},
-	fetchRecipeEnd(state, data) {
+	[GET_RECIPE_END](state, data) {
 		state.currentRecipe = data;
 	},
-	fetchRecipeIngredientsEnd(state, data) {
-		//state.currentRecipe = state.currentRecipe || {};
+	[GET_RECIPE_INGREDIENTS_END](state, data) {
 		state.currentRecipeIngredients = data;
 	},
-	createRecipeEnd(state, data) {
+	[RECIPE_CREATE_END](state, data) {
 		state.currentRecipe = data;
 	},
-	recipeResetStateCalled(state) {
+	[RECIPE_RESET_STATE_CALLED](state) {
 		for (let s in state) {
 			Vue.set(state, s, initialState[s]);
 		}

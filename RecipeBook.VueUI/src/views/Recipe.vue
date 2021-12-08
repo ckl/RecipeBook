@@ -1,8 +1,8 @@
 ﻿<template>
 	<div class="container">
 		<div class="row border p-4 my-3 bg-light rounded-3">
-
 			<h3>{{ currentRecipe.name }}</h3>
+
 			<b-tabs class="w-100">
 				<b-tab title="Text View">
 					<recipe-text-view :recipe-name="currentRecipe.name"
@@ -16,7 +16,7 @@
 				<b-tab title="Edit View">
 					<recipe-edit-view :recipe-id="currentRecipe.recipeID"
 									  :ingredients-to-show="ingredientsToShow"
-									  v-on:add-ingredient="addIngredient"></recipe-edit-view>
+									  v-on:add-ingredient="ingredientsToShow.push({})"></recipe-edit-view>
 				</b-tab>
 			</b-tabs>
 		</div>
@@ -28,6 +28,10 @@
 	import toast from '@/mixins/toast.mixin'
 	import RecipeEditView from '@/components/RecipeEditView.vue'
 	import RecipeTextView from '@/components/RecipeTextView.vue'
+	import {
+		GET_RECIPE,
+		GET_RECIPE_INGREDIENTS
+	} from '@/store/actions.type'
 
 	export default {
 		name: 'Recipe',
@@ -40,21 +44,12 @@
 			};
 		},
 		methods: {
-			addIngredient() {
-				this.ingredientsToShow.push({
-					ingredientList: this.ingredientList,
-				});
-			},
 		},
 		computed: {
 			...mapGetters({
 				currentRecipe: 'recipe/currentRecipe',
 				ingredientsToShow: 'recipe/currentRecipeIngredients',
-				ingredientList: 'recipe/ingredients'
 			}),
-			//ingredientList() {
-			//	return this.$store.getters.ingredients;
-			//},
 			ingredientsText() {
 				if (! Array.isArray(this.ingredientsToShow)) {
 					return;
@@ -72,10 +67,10 @@
 		created() {
 		},
 		mounted() {
-			this.$store.dispatch('recipe/fetchRecipe', this.$route.params.id)
-				.then(this.$store.dispatch('recipe/fetchRecipeIngredients', this.$route.params.id))
+			this.$store.dispatch(`recipe/${GET_RECIPE}`, this.$route.params.id)
+				.then(this.$store.dispatch(`recipe/${GET_RECIPE_INGREDIENTS}`, this.$route.params.id))
 				.catch(error => {
-					this.showToastError(error)
+					this.$toastError(error)
 				});
 		},
 	}

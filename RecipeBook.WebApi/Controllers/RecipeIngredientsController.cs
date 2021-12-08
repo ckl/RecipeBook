@@ -42,7 +42,7 @@ namespace RecipeBook.WebApi.Controllers
 
 			int recipeId = ingredients.FirstOrDefault().RecipeID;
 
-			if (ingredients.Any(x => x.RecipeID <= 0))
+			if (ingredients.Any(x => x.RecipeID <= 0 || x.IngredientID <= 0))
 			{
 				throw new ArgumentException("recipeId cannot be 0");
 			}

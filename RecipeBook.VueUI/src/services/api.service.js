@@ -6,20 +6,26 @@ const ApiService = {
 	init() {
 		axios.defaults.baseURL = API_URL;
 	},
-	get(resource, slug = '') {
-		return axios.get(`${resource}/${slug}`).catch(error => {
+	async get(resource, slug = '') {
+		try {
+			return axios.get(`${resource}/${slug}`);
+		} catch (error) {
 			throw new Error(`ApiService.get || Resource: ${resource} || Error: ${error}`);
-		})
+		}
 	},
-	post(resource, params) {
-		return axios.post(resource, params).catch(error => {
+	async post(resource, params) {
+		try {
+			return axios.post(resource, params);
+		} catch (error) {
 			throw new Error(`ApiService.post || Resource: ${resource} || Error: ${error}`);
-		});
+		}
 	},
-	put(resource, slug, params) {
-		return axios.put(`${resource}/${slug}`, params).catch(error => {
+	async put(resource, slug, params) {
+		try {
+			return axios.put(`${resource}/${slug}`, params);
+		} catch (error) {
 			throw new Error(`ApiService.put || Resource: ${resource} || Error: ${error}`);
-		});
+		}
 	}
 };
 

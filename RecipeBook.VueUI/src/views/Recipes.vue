@@ -23,6 +23,7 @@
 <script>
 	import { mapGetters } from 'vuex'
 	import toast from '@/mixins/toast.mixin'
+	import { GET_RECIPES } from '@/store/actions.type'
 
 	export default {
 		name: 'Recipes',
@@ -39,9 +40,9 @@
 			})
 		},
 		mounted() {
-			this.$store.dispatch('recipe/fetchRecipes')
+			this.$store.dispatch(`recipe/${GET_RECIPES}`)
 				.catch(error => {
-					this.showToastError({ message: 'Failed to get recipe list', ex: error });
+					this.$toastError({ message: 'Failed to get recipe list', ex: error });
 				})
 		}
 	}

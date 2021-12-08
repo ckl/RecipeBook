@@ -103,6 +103,11 @@
 	import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
 	import NewIngredientModal from '@/components/NewIngredientModal.vue'
 	import toast from '@/mixins/toast.mixin'
+	import {
+		RECIPE_CREATE,
+		RECIPE_UPDATE,
+		RECIPE_INGREDIENTS_CREATE
+	} from '@/store/actions.type'
 
 	export default {
 		name: 'RecipeEditView',
@@ -133,7 +138,7 @@
 
 				if (errors.length > 0) {
 					let msg = errors.join('\r\n');
-					this.showToastWarn(msg);
+					this.$toast(msg, 'Bad input', 'warn');
 					return;
 				}
 
@@ -141,47 +146,27 @@
 				this.statusMsg = 'Loading...';
 
 				let self = this;
-				let action = typeof this.recipe.recipeID === 'undefined' ? "recipe/createRecipe" : "recipe/updateRecipe"
+				let action = typeof this.recipe.recipeID === 'undefined' ?
+					`recipe/${RECIPE_CREATE}` :
+					`recipe/${RECIPE_UPDATE}` 
 				this.$store
 					.dispatch(action)
-					.then(() => this.$store.dispatch('recipe/createRecipeIngredients'))
+					.then(() => this.$store.dispatch(`recipe/${RECIPE_INGREDIENTS_CREATE}`))
 					.then(() => {
 						self.isLoading = false;
-						// TODO: fix this
-						//if (parseInt(this.$route.params.id) > 0) {
-						//	return this.makeToast();
-						//}
-						//return this.redirect().then(this.makeToast).catch(this.error);
-						var x = self.recipe.recipeID;
 						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
-							self.showToastSuccess('Updated');
+							self.$toast('Updated', 'Success', 'success');
 						}
 						else {
-							this.$router.push({ name: 'Recipe', params: { id: x } }, () => {
-								self.showToastSuccess('Updated');
+						// TODO: fix this - need to redirect to edit-view & show toaster on save
+							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID } }, () => {
+								self.$toast('Updated', 'Success', 'success');
 							});
 						}
 					})
 					.catch((error) => {
-						this.showToastError({ex: error, message: 'Error saving stuff'})
+						this.$toastError({ex: error, message: 'Error saving stuff'})
 					});
-			},
-			makeToast() {
-				return new Promise((resolve) => {
-					this.$bvToast.toast("Updated", {
-						title: 'Success',
-						variant: 'success',
-						autoHideDelay: 5000,
-					});
-					resolve();
-				});
-			},
-			redirect() {
-				// TODO: redirect to created page
-				return new Promise((resolve) => {
-					this.$router.push({ name: 'Recipes'/*, params: { id: this.recipeID }*/ });
-					resolve();
-				});
 			},
 		},
 		computed: {

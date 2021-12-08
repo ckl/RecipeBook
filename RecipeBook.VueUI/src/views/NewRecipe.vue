@@ -3,54 +3,34 @@
 		<div class="p-4 my-3 bg-light rounded-3 border">
 
 			<recipe-edit-view :ingredients-to-show="ingredientsToShow"
-							  v-on:add-ingredient="addIngredient"></recipe-edit-view>
+							  v-on:add-ingredient="ingredientsToShow.push({})"></recipe-edit-view>
 		</div>
 	</div>
 </template>
 
 <script>
 	import RecipeEditView from '@/components/RecipeEditView.vue'
+	import { RECIPE_RESET_STATE } from '@/store/actions.type'
 
 	export default {
 		name: 'Recipe',
 		components: { RecipeEditView },
 		data() {
 			return {
-				isLoading: true,
-				recipeID: -1,
-				recipeName: '',
-				description: '',
-				cookTimeMinutes: '',
-				notes: '',
-				directionsText: '',
-				ingredientsText: '',
 				ingredientsToShow: [],
-				url: 'https://test.contoso.com:5001',
-				statusMsg: ''
 			};
 		},
 		async beforeRouteUpdate(to, from, next) {
-			await this.$store.dispatch('recipe/recipeResetState');
-			return next();
+			await this.$store.dispatch(`recipe/${RECIPE_RESET_STATE}`);
+			next();
 		},
 		methods: {
-			addIngredient() {
-				this.ingredientsToShow.push({
-					ingredientList: this.ingredientList,
-					selected: {},
-					error: []
-				});
-			},
 		},
 		computed: {
-			ingredientList() {
-				return this.$store.getters.ingredientList;
-			}
 		},
 		created() {
 		},
 		mounted() {
-			this.$store.dispatch('recipe/recipeResetState');
 		}
 	}
 
