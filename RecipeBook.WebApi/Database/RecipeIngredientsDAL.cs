@@ -23,20 +23,7 @@ namespace RecipeBook.WebApi.Database
 			}
 		}
 
-		//public static IEnumerable<RecipeIngredient> Get()
-		//{
-		//	using (var context = new MyDbContext())
-		//	{
-		//		List<RecipeIngredient> recipes = new List<RecipeIngredient>();
-		//		foreach (var i in context.RecipeIngredients)
-		//		{
-		//			recipes.Add(i);
-		//		}
-		//		return recipes;
-		//	}
-		//}
-
-		public static void Upsert(int recipeID, IEnumerable<RecipeIngredient> ingredients)
+		public async static Task Upsert(int recipeID, IEnumerable<RecipeIngredient> ingredients)
 		{
 			using (var context = new MyDbContext())
 			{
@@ -49,14 +36,6 @@ namespace RecipeBook.WebApi.Database
 
 				foreach (var i in ingredients)
 				{
-					//Insert(new RecipeIngredient
-					//{
-					//	IngredientID = i.IngredientID,
-					//	RecipeID = recipeID,
-					//	Quantity = i.Quantity,
-					//	Notes = i.Notes
-					//});
-
 					context.RecipeIngredients.Add(new RecipeIngredient
 					{
 						IngredientID = i.IngredientID,
@@ -65,54 +44,29 @@ namespace RecipeBook.WebApi.Database
 						Notes = i.Notes
 					});
 				}
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 			}
 		}
 
-		public static async Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
+		public async static Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
 		{
 			using (var context = new MyDbContext())
 			{
-				var x = (from i in context.Ingredients
-						 join ri in context.RecipeIngredients
-						 on i.IngredientID equals ri.IngredientID
-						 where ri.RecipeID == recipeID
-						 select new RecipeIngredientDto
-						 {
-							 IngredientID = i.IngredientID,
-							 Name = i.Name,
-							 Notes = ri.Notes,
-							 RecipeID = recipeID,
-							 Quantity = ri.Quantity
-						 });
+				IQueryable<RecipeIngredientDto> query =  
+					(from i in context.Ingredients
+					join ri in context.RecipeIngredients
+					on i.IngredientID equals ri.IngredientID
+					where ri.RecipeID == recipeID
+					select new RecipeIngredientDto
+					{
+						IngredientID = i.IngredientID,
+						Name = i.Name,
+						Notes = ri.Notes,
+						RecipeID = recipeID,
+						Quantity = ri.Quantity
+					});
 
-				return await x.ToListAsync();
-				//return await context.RecipeIngredients.Where(x => x.RecipeID == recipeID).ToListAsync();
-			}
-		}
-
-		public static void Put(RecipeIngredient recipe)
-		{
-			using (var context = new MyDbContext())
-			{
-				context.Entry(recipe).State = EntityState.Modified;
-				context.SaveChanges();
-			}
-		}
-
-		public static void Delete(int id)
-		{
-			using (var context = new MyDbContext())
-			{
-				var ingredient = context.RecipeIngredients.Find(id);
-
-				if (ingredient == null)
-				{
-					return;
-				}
-
-				context.RecipeIngredients.Remove(ingredient);
-				context.SaveChanges();
+				return await query.ToListAsync();
 			}
 		}
 	}

@@ -67,10 +67,11 @@
 		created() {
 		},
 		mounted() {
-			this.$store.dispatch(`recipe/${GET_RECIPE}`, this.$route.params.id)
-				.then(this.$store.dispatch(`recipe/${GET_RECIPE_INGREDIENTS}`, this.$route.params.id))
+			let id = this.$route.params.id;
+			this.$store.dispatch(`recipe/${GET_RECIPE}`, id)
+				.then(() => this.$store.dispatch(`recipe/${GET_RECIPE_INGREDIENTS}`, id))
 				.catch(error => {
-					this.$toastError(error)
+					this.$toastError(error, `Getting RecipeId ${id}`)
 				});
 		},
 	}

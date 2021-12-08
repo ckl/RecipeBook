@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBook.WebApi.Database;
 using RecipeBook.WebApi.Models;
@@ -17,28 +18,41 @@ namespace RecipeBook.WebApi.Controllers
 	{
 		// GET: api/<ValuesController>
 		[HttpGet]
-		public IEnumerable<Recipe> Get()
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult<IEnumerable<Recipe>>> Get()
 		{
-			return RecipeDAL.Get();
+			return Ok(await RecipeDAL.Get());
 		}
 
 		// GET api/<ValuesController>/5
 		[HttpGet("{id}")]
-		public async Task<Recipe> Get(int id)
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> Get(int id)
 		{
-			return await RecipeDAL.Get(id);
+			Recipe recipe = await RecipeDAL.Get(id);
+			if (recipe is null)
+			{
+				return NotFound();
+			}
+
+			return Ok(recipe);
 		}
 
 		// POST api/<ValuesController>
 		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<Recipe>> Post(Recipe recipe)
 		{
-			Recipe newRecipe = RecipeDAL.Insert(recipe);
+			Recipe newRecipe = await RecipeDAL.Insert(recipe);
 			return CreatedAtAction(nameof(Post), newRecipe.RecipeID, newRecipe);
 		}
 
 		// PUT api/<ValuesController>/5
 		[HttpPut("{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> Put(int id, Recipe recipe)
 		{
 			if (id != recipe.RecipeID)
@@ -46,27 +60,17 @@ namespace RecipeBook.WebApi.Controllers
 				return BadRequest();
 			}
 
-			try
-			{
-				RecipeDAL.Put(recipe);
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-
-			}
-			catch (Exception)
-			{
-
-			}
+			await RecipeDAL.Put(recipe);
 
 			return NoContent();
 		}
 
 		// DELETE api/<ValuesController>/5
 		[HttpDelete("{id}")]
-		public void Delete(int id)
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task Delete(int id)
 		{
-			RecipeDAL.Delete(id);
+			await RecipeDAL.Delete(id);
 		}
 	}
 }

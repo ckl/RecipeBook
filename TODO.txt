@@ -4,8 +4,6 @@
 - remove options from selects as they're being chosen
 	- or just look into select2
 		- https://codesandbox.io/s/github/vuejs/vuejs.org/tree/master/src/v2/examples/vue-20-wrapper-component?from-embed=&file=/index.html
-- make tabs into components
-	- make more stuff into components
 - form validation
 	- https://bootstrap-vue.org/docs/reference/validation
 - error handling / toasts (look into vue state/contexts/mutations)
@@ -22,11 +20,13 @@
 - use lodash with vuex for updating nested objects
 	- https://stackoverflow.com/questions/51672475/how-to-properly-deal-with-editable-complex-object-nested-with-vuex
 - only enable Save button when a field becomes dirty
+- search box above the recipes
+- 404 error pages
 
 BUGS:
 ------
-- creating a new recipe doesn't navigate to new page or show toaster
-	- recipeID isn't being set on state after create???
+- creating a new recipe doesn't show toaster
+- create new recipe, get sent back to text-view, go to recipes, click New. Old data is still there
 - create global util for toasts (https://vuejs.org/v2/cookbook/adding-instance-properties.html)
 - fix adding multiple ingredients to a recipe
 - Text View ingredients don't update after saving
@@ -40,3 +40,12 @@ LINKS:
 ------
 Best practices for managing state with vuex
 	https://gist.github.com/DawidMyslak/2b046cca5959427e8fb5c1da45ef7748
+
+Metaprogramming in ES6
+	https://www.keithcirkel.co.uk/metaprogramming-in-es6-symbols/
+
+Shopping Cart in Vue 3
+	https://www.digitalocean.com/community/tutorials/how-to-build-a-shopping-cart-with-vue-3-and-vuex
+
+ASP.NET Core WebAPI best practices
+https://code-maze.com/aspnetcore-webapi-best-practices/

@@ -42,7 +42,7 @@
 		mounted() {
 			this.$store.dispatch(`recipe/${GET_RECIPES}`)
 				.catch(error => {
-					this.$toastError({ message: 'Failed to get recipe list', ex: error });
+					this.$toastError(error, 'Getting recipe list');
 				})
 		}
 	}

@@ -43,15 +43,14 @@
 			// Handle general exceptions
 			window.onerror = function (msg, url, line, col, error) {
 				//code to handle or report error goes here
-				console.log(msg);
-				console.log(line);
-				console.log(error);
-				this.$toastError({ message: msg, title: 'Generic Error', ex: error });
+				console.error(`window.onerror: ${msg}`);
+				console.error(error);
+				this.$toastError(msg);
 			}
 
 			this.$store.dispatch(`ingredient/${GET_INGREDIENTS}`)
 				.catch(error => {
-					this.$toastError({ message: 'Initialize Error - fetching ingredients', ex: error });
+					this.$toastError(error, 'Fetching ingredients');
 				});
 		}
 	}

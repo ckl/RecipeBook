@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RecipeBook.WebApi.Database;
 using RecipeBook.WebApi.Models;
 using System;
@@ -16,6 +17,8 @@ namespace RecipeBook.WebApi.Controllers
 	{
 		// GET: api/<RecipeIngredientsController>
 		[HttpGet]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IEnumerable<string> Get()
 		{
 			//return new string[] { "value1", "value2" };
@@ -24,20 +27,24 @@ namespace RecipeBook.WebApi.Controllers
 
 		// GET api/<RecipeIngredientsController>/5
 		[HttpGet("{recipeID}")]
-		public async Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<IEnumerable<RecipeIngredientDto>>> Get(int recipeID)
 		{
 			IEnumerable<RecipeIngredientDto> rtrn = await RecipeIngredientsDAL.Get(recipeID);
-			return rtrn;
+			return Ok(rtrn);
 		}
 
 		// POST api/<RecipeIngredientsController>
 		[HttpPost]
-		public void Post(IEnumerable<RecipeIngredient> ingredients)
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]	// TODO: consider removing this
+		public async Task<IActionResult> Post(IEnumerable<RecipeIngredient> ingredients)
 		{
 			// TODO: fix this
 			if (ingredients == null || !ingredients.Any())
 			{
-				return;
+				return BadRequest();
 			}
 
 			int recipeId = ingredients.FirstOrDefault().RecipeID;
@@ -47,19 +54,28 @@ namespace RecipeBook.WebApi.Controllers
 				throw new ArgumentException("recipeId cannot be 0");
 			}
 
-			RecipeIngredientsDAL.Upsert(recipeId, ingredients);
+			// TODO: look into ModelState
+			//if (!ModelState.IsValid)
+			//{
+			//	return BadReq
+			//}
+			await RecipeIngredientsDAL.Upsert(recipeId, ingredients);
+			return NoContent();
 		}
 
 		// PUT api/<RecipeIngredientsController>/5
 		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<IActionResult> Put(int id, [FromBody] string value)
 		{
 			throw new NotImplementedException();
 		}
 
 		// DELETE api/<RecipeIngredientsController>/5
 		[HttpDelete("{id}")]
-		public void Delete(int id)
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public async Task<IActionResult> Delete(int id)
 		{
 			throw new NotImplementedException();
 		}

@@ -8,3 +8,5 @@ export const GET_INGREDIENTS = "getIngredients";
 export const RECIPE_CREATE = "createRecipe";
 export const RECIPE_UPDATE = "updateRecipe";
 export const RECIPE_INGREDIENTS_CREATE = "createRecipeIngredients";
+export const RECIPE_RESET_STATE = "recipeResetState";
+export const INGREDIENT_CREATE = "ingredientCreate";

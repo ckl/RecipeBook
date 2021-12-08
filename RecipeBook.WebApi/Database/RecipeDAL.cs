@@ -11,28 +11,23 @@ namespace RecipeBook.WebApi.Database
 	// TODO: somehow make this and all other calls await and use .SaveChangesAsync()
 	public static class RecipeDAL
 	{
-		public static Recipe Insert(Recipe recipe)
+		public async static Task<Recipe> Insert(Recipe recipe)
 		{
 			using (var context = new MyDbContext())
 			{
 				recipe.RecipeID = 0;
 				context.Recipes.Add(recipe);
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 
 				return recipe;
 			}
 		}
 
-		public static IEnumerable<Recipe> Get()
+		public async static Task<IEnumerable<Recipe>> Get()
 		{
 			using (var context = new MyDbContext())
 			{
-				List<Recipe> recipes = new List<Recipe>();
-				foreach (var i in context.Recipes)
-				{
-					recipes.Add(i);
-				}
-				return recipes;
+				return await context.Recipes.ToListAsync();
 			}
 		}
 
@@ -44,19 +39,20 @@ namespace RecipeBook.WebApi.Database
 			}
 		}
 
-		public static void Put(Recipe recipe)
+		public async static Task Put(Recipe recipe)
 		{
 			using (var context = new MyDbContext())
 			{
 				context.Entry(recipe).State = EntityState.Modified;
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 			}
 		}
 
-		public static void Delete(int recipeId)
+		public async static Task Delete(int recipeId)
 		{
 			using (var context = new MyDbContext())
 			{
+				// /first remove the ingredients
 				var ingredients = context.RecipeIngredients.Where(x => x.RecipeID == recipeId);
 
 				foreach (var ingredient in ingredients)
@@ -69,6 +65,7 @@ namespace RecipeBook.WebApi.Database
 					context.RecipeIngredients.Remove(ingredient);
 				}
 
+				// remove the recipe
 				var recipe = context.Recipes.Find(recipeId);
 
 				if (recipe != null)
@@ -76,7 +73,7 @@ namespace RecipeBook.WebApi.Database
 					context.Recipes.Remove(recipe);
 				}
 
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 			}
 		}
 	}
