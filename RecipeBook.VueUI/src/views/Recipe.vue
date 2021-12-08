@@ -24,7 +24,7 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex'
+	import { mapActions, mapGetters } from 'vuex'
 	import toast from '@/mixins/toast.mixin'
 	import RecipeEditView from '@/components/RecipeEditView.vue'
 	import RecipeTextView from '@/components/RecipeTextView.vue'
@@ -44,6 +44,10 @@
 			};
 		},
 		methods: {
+			...mapActions({
+				getRecipe: `recipe/${GET_RECIPE}`,
+				getRecipeIngredients: `recipe/${GET_RECIPE_INGREDIENTS}`
+			})
 		},
 		computed: {
 			...mapGetters({
@@ -54,8 +58,8 @@
 				if (! Array.isArray(this.ingredientsToShow)) {
 					return;
 				}
-				var ingredients = this.ingredientsToShow.map(x => {
-					var text = x.name + ' - ' + x.quantity;
+				let ingredients = this.ingredientsToShow.map(x => {
+					let text = `${x.name} - ${x.quantity}`;
 					if (x.notes) {
 						text += ' (' + x.notes + ')';
 					}
@@ -68,8 +72,8 @@
 		},
 		mounted() {
 			let id = this.$route.params.id;
-			this.$store.dispatch(`recipe/${GET_RECIPE}`, id)
-				.then(() => this.$store.dispatch(`recipe/${GET_RECIPE_INGREDIENTS}`, id))
+			this.getRecipe(id)
+				.then(() => this.getRecipeIngredients(id))
 				.catch(error => {
 					this.$toastError(error, `Getting RecipeId ${id}`)
 				});

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex'
+	import { mapActions, mapGetters } from 'vuex'
 	import toast from '@/mixins/toast.mixin'
 	import { GET_RECIPES } from '@/store/actions.type'
 
@@ -33,6 +33,9 @@
 			};
 		},
 		methods: {
+			...mapActions({
+				getRecipes: `recipe/${GET_RECIPES}`
+			})
 		},
 		computed: {
 			...mapGetters({
@@ -40,7 +43,7 @@
 			})
 		},
 		mounted() {
-			this.$store.dispatch(`recipe/${GET_RECIPES}`)
+			this.getRecipes()
 				.catch(error => {
 					this.$toastError(error, 'Getting recipe list');
 				})

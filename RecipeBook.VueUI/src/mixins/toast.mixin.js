@@ -41,8 +41,14 @@
 				let resp = response.response;
 				status = resp.status,
                 statusText = resp.statusText,
-				error = resp.data.errors.id[0],
 				title = `${status} - ${statusText}`;
+				
+				if (resp.data.errors) {
+					error = resp.data.errors.id[0];
+				}
+				else {
+					error = resp.data.title;
+				}
 			}
 			else {
 				title = response.message;
@@ -50,7 +56,7 @@
 			}
 
 			if (typeof message === 'string') {
-				error += ` ${message}`;
+				error += ` - ${message}`;
 			}
 
             console.error(`Error ${status}: ${statusText}: ${response}`);
