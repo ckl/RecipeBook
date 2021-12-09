@@ -119,8 +119,13 @@
 		mixins: [ toast ],
 		data() {
 			return {
-				isLoading: false,	// prevent double clicking on buttons
 			};
+		},
+		computed: {
+			...mapGetters({
+				recipe: 'recipe/currentRecipe',
+				isLoading: 'recipe/isLoading'
+			}),
 		},
 		methods: {
 			...mapActions({
@@ -145,36 +150,30 @@
 					return;
 				}
 
-				this.isLoading = true;
 				this.statusMsg = 'Loading...';
 
 				let self = this;
 				let action = typeof this.recipe.recipeID === 'undefined' ?
 					`recipe/${RECIPE_CREATE}` :
-					`recipe/${RECIPE_UPDATE}` 
+					`recipe/${RECIPE_UPDATE}`
+
 				this.$store
 					.dispatch(action)
 					.then(() => this.createRecipeIngredients())
 					.then(() => {
-						self.isLoading = false;
 						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
 							self.$toast('Updated', 'Success', 'success');
 						}
 						else {
 							// TODO: fix this - need to redirect to edit-view & show toaster on save
 							// Look into this.$nextTick( () => { })
-							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID } }, () => {
+							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID }, hash: '#edit-text' }, () => {
 								self.$toast('Updated', 'Success', 'success');
 							});
 						}
 					})
 					.catch((error) => this.$toastError(error, 'Error saving stuff'));
 			},
-		},
-		computed: {
-			...mapGetters({
-				recipe: 'recipe/currentRecipe'
-			}),
 		},
 		mounted() {
 		}
