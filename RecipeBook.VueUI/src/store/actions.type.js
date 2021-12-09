@@ -10,3 +10,4 @@ export const RECIPE_UPDATE = "updateRecipe";
 export const RECIPE_INGREDIENTS_CREATE = "createRecipeIngredients";
 export const RECIPE_RESET_STATE = "recipeResetState";
 export const INGREDIENT_CREATE = "ingredientCreate";
+export const INGREDIENT_RESET_STATE = "ingredientResetState"

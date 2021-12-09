@@ -98,7 +98,7 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex'
+	import { mapActions, mapGetters } from 'vuex'
 	import IngredientItem from '@/components/IngredientItem.vue'
 	import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
 	import NewIngredientModal from '@/components/NewIngredientModal.vue'
@@ -123,6 +123,9 @@
 			};
 		},
 		methods: {
+			...mapActions({
+				createRecipeIngredients: `recipe/${RECIPE_INGREDIENTS_CREATE}`
+			}),
 			clickSaveRecipe() {
 				// TODO: move form validation somewhere else
 				let errors = [];
@@ -151,22 +154,21 @@
 					`recipe/${RECIPE_UPDATE}` 
 				this.$store
 					.dispatch(action)
-					.then(() => this.$store.dispatch(`recipe/${RECIPE_INGREDIENTS_CREATE}`))
+					.then(() => this.createRecipeIngredients())
 					.then(() => {
 						self.isLoading = false;
 						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
 							self.$toast('Updated', 'Success', 'success');
 						}
 						else {
-						// TODO: fix this - need to redirect to edit-view & show toaster on save
+							// TODO: fix this - need to redirect to edit-view & show toaster on save
+							// Look into this.$nextTick( () => { })
 							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID } }, () => {
 								self.$toast('Updated', 'Success', 'success');
 							});
 						}
 					})
-					.catch((error) => {
-						this.$toastError({ex: error, message: 'Error saving stuff'})
-					});
+					.catch((error) => this.$toastError(error, 'Error saving stuff'));
 			},
 		},
 		computed: {

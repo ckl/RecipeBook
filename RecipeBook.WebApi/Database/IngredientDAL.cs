@@ -56,6 +56,8 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
+				ingredient.CreatedOnUTC = DateTime.UtcNow;
+				ingredient.UpdatedOnUTC = DateTime.UtcNow;
 				context.Ingredients.Add(ingredient);
 				context.SaveChanges();
 
@@ -67,6 +69,7 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
+				ingredient.UpdatedOnUTC = DateTime.UtcNow;
 				context.Entry(ingredient).State = EntityState.Modified;
 				context.SaveChanges();
 			}

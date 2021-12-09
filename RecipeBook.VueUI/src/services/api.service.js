@@ -34,6 +34,9 @@ export default ApiService;
 export const IngredientService = {
 	get(slug) {
 		return ApiService.get('Ingredient', slug);
+	},
+	createIngredient(params) {
+		return ApiService.post('Ingredient', params)
 	}
 };
 

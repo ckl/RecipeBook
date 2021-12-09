@@ -7,3 +7,4 @@ export const GET_INGREDIENTS_END = "getIngredientsEnd";
 export const RECIPE_CREATE_END = "recipeCreateEnd";
 export const RECIPE_RESET_STATE_CALLED = "recipeResetStateCalled";
 export const INGREDIENT_CREATE_END = "ingredientCreateEnd";
+export const INGREDIENT_RESET_STATE_CALLED = "ingredientResetStateCalled"

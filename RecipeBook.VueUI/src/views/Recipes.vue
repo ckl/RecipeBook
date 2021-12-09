@@ -44,9 +44,7 @@
 		},
 		mounted() {
 			this.getRecipes()
-				.catch(error => {
-					this.$toastError(error, 'Getting recipe list');
-				})
+				.catch(error => this.$toastError(error, 'Getting recipe list'))
 		}
 	}
 

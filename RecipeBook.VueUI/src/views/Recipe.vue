@@ -74,9 +74,7 @@
 			let id = this.$route.params.id;
 			this.getRecipe(id)
 				.then(() => this.getRecipeIngredients(id))
-				.catch(error => {
-					this.$toastError(error, `Getting RecipeId ${id}`)
-				});
+				.catch(error => this.$toastError(error, `Getting RecipeId ${id}`));
 		},
 	}
 
