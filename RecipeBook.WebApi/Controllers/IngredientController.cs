@@ -17,10 +17,10 @@ namespace RecipeBook.WebApi.Controllers
 	{
 		// GET: api/<IngredientController>
 		[HttpGet]
-		public IEnumerable<Ingredient> Get()
+		public async Task<IEnumerable<Ingredient>> Get()
 		{
 			//DatabaseManager.Insert();
-			return IngredientDAL.Get();
+			return await IngredientDAL.Get();
 		}
 
 		// GET api/<IngredientController>/5
@@ -34,7 +34,7 @@ namespace RecipeBook.WebApi.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Ingredient>> Post(Ingredient ingredient)
 		{
-			Ingredient newIngredient = IngredientDAL.Post(ingredient);
+			Ingredient newIngredient = await IngredientDAL.Post(ingredient);
 			return CreatedAtAction(nameof(Get), newIngredient.IngredientID, newIngredient);
 		}
 
@@ -49,13 +49,17 @@ namespace RecipeBook.WebApi.Controllers
 
 			try
 			{
-				IngredientDAL.Put(ingredient);
+				await IngredientDAL.Put(ingredient);
 			}
 			catch (DbUpdateConcurrencyException)
 			{
 
 			}
 			catch (Exception)
+			{
+
+			}
+			finally
 			{
 
 			}
@@ -67,13 +71,7 @@ namespace RecipeBook.WebApi.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{
-			//Ingredient ingredient = DatabaseManager.Get(id);
-			//if (ingredient == null)
-			//{
-			//	return NotFound();
-			//}
-
-			IngredientDAL.Delete(id);
+			await IngredientDAL.Delete(id);
 			
 			return NoContent();
 		}

@@ -11,71 +11,46 @@ namespace RecipeBook.WebApi.Database
 	// TODO: somehow make this and all other calls await and use .SaveChangesAsync()
 	public static class IngredientDAL
 	{
-		public static void Insert()
+		public async static Task<IEnumerable<Ingredient>> Get()
 		{
 			using (var context = new MyDbContext())
 			{
-				var ingredient = new Ingredient
-				{
-					Name = "Lettuce",
-					Notes = "cruncy water"
-				};
-
-				context.Ingredients.Add(ingredient);
-				context.SaveChanges();
-
-				foreach (var i in context.Ingredients)
-				{
-					var x = i;
-				}
+				return await context.Ingredients.ToListAsync();
 			}
 		}
 
-		public static IEnumerable<Ingredient> Get()
+		public async static Task<Ingredient> Get(int id)
 		{
 			using (var context = new MyDbContext())
 			{
-				List<Ingredient> ingredients = new List<Ingredient>();
-				foreach (var i in context.Ingredients)
-				{
-					ingredients.Add(i);
-				}
-				return ingredients;
+				return await context.Ingredients.FirstOrDefaultAsync(x => x.IngredientID == id);
 			}
 		}
 
-		public static Task<Ingredient> Get(int id)
-		{
-			using (var context = new MyDbContext())
-			{
-				return context.Ingredients.FirstOrDefaultAsync(x => x.IngredientID == id);
-			}
-		}
-
-		public static Ingredient Post(Ingredient ingredient)
+		public async static Task<Ingredient> Post(Ingredient ingredient)
 		{
 			using (var context = new MyDbContext())
 			{
 				ingredient.CreatedOnUTC = DateTime.UtcNow;
 				ingredient.UpdatedOnUTC = DateTime.UtcNow;
 				context.Ingredients.Add(ingredient);
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 
 				return ingredient;
 			}
 		}
 
-		public static void Put(Ingredient ingredient)
+		public async static Task Put(Ingredient ingredient)
 		{
 			using (var context = new MyDbContext())
 			{
 				ingredient.UpdatedOnUTC = DateTime.UtcNow;
 				context.Entry(ingredient).State = EntityState.Modified;
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 			}
 		}
 
-		public static void Delete(int id)
+		public async static Task Delete(int id)
 		{
 			using (var context = new MyDbContext())
 			{
@@ -87,7 +62,7 @@ namespace RecipeBook.WebApi.Database
 				}
 
 				context.Ingredients.Remove(ingredient);
-				context.SaveChanges();
+				await context.SaveChangesAsync();
 			}
 		}
 	}

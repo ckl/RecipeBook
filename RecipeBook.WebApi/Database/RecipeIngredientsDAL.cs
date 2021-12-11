@@ -8,21 +8,8 @@ using RecipeBook.WebApi.Models;
 namespace RecipeBook.WebApi.Database
 {
 	// TODO: make this a singleton
-	// TODO: somehow make this and all other calls await and use .SaveChangesAsync()
 	public static class RecipeIngredientsDAL
 	{
-		public static RecipeIngredient Insert(RecipeIngredient ingredient)
-		{
-			using (var context = new MyDbContext())
-			{
-				ingredient.RecipeID = 0;
-				context.RecipeIngredients.Add(ingredient);
-				context.SaveChanges();
-
-				return ingredient;
-			}
-		}
-
 		public async static Task Upsert(int recipeID, IEnumerable<RecipeIngredient> ingredients)
 		{
 			using (var context = new MyDbContext())
