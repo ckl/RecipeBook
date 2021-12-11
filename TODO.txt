@@ -6,6 +6,8 @@
 		- https://codesandbox.io/s/github/vuejs/vuejs.org/tree/master/src/v2/examples/vue-20-wrapper-component?from-embed=&file=/index.html
 - form validation
 	- https://bootstrap-vue.org/docs/reference/validation
+	- https://www.positronx.io/vue-js-veevalidate-bootstrapvue-form-validation-example/
+	- https://vuelidate.js.org/#sub-without-v-model
 - error handling / toasts (look into vue state/contexts/mutations)
 	- https://medium.com/js-dojo/error-exception-handling-in-vue-js-application-6c26eeb6b3e4
 	- https://masteringjs.io/tutorials/vue/error-handling
@@ -22,6 +24,7 @@
 - only enable Save button when a field becomes dirty
 - search box above the recipes
 - 404 error pages
+- card view / list view for recipes
 
 BUGS:
 ------

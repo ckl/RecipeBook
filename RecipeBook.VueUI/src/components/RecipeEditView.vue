@@ -1,10 +1,15 @@
 ﻿<template>
 	<div>
+		<alert-dismissable
+			:timer="errAlert.timer"
+			:messages="errAlert.messages"
+			:variant="errAlert.variant"
+			@dismissed="errAlert.timer=0"></alert-dismissable>
 		<div class="border p-2 my-3 bg-light rounded-3">
 			<b-container fluid>
 				<b-row class="my-1">
 					<b-col>
-						<span class="float-right">
+						<span class="float-right" v-if="recipe.recipeID">
 							<delete-recipe-modal :recipe-id="recipe.recipeID"
 												 :recipe-name="recipe.name">
 							</delete-recipe-modal>
@@ -55,8 +60,6 @@
 				</b-row>
 				<b-row class="my-1">
 					<b-col>
-						<!-- TODO: change to list group -->
-						<!-- https://www.creative-tim.com/learning-lab/bootstrap-vue/list-group/argon-dashboard -->
 						<ul>
 							<li is="ingredient-item" v-for="(ingredient, index) in ingredientsToShow"
 								:key="ingredient.ingredientID"
@@ -72,7 +75,7 @@
 				</b-row>
 				<b-row align-h="between" class="my-1">
 					<b-col md="2">
-						<button v-on:click="$emit('add-ingredient')" class="form-control">Add Ingredient</button>
+						<button v-on:click="ingredientsToShow.push({})" class="form-control">Add Ingredient</button>
 					</b-col>
 					<b-col md="2">
 						<new-ingredient-modal></new-ingredient-modal>
@@ -89,7 +92,11 @@
 				</b-row>
 				<b-row class="my-1">
 					<b-col>
-						<b-button v-on:click="clickSaveRecipe" :disabled="isLoading" variant="success">Save Changes</b-button>
+						<b-button v-on:click="clickSaveRecipe" 
+							:disabled="isLoading" 
+							variant="success">Save Changes
+							<b-spinner v-if="isLoading" small></b-spinner>	
+						</b-button>
 					</b-col>
 				</b-row>
 			</b-container>
@@ -108,23 +115,29 @@
 		RECIPE_UPDATE,
 		RECIPE_INGREDIENTS_CREATE
 	} from '@/store/actions.type'
+import AlertDismissable from './Alert.Dismissable.vue'
 
 	export default {
 		name: 'RecipeEditView',
-		components: { DeleteRecipeModal, IngredientItem, NewIngredientModal },
+		components: { DeleteRecipeModal, IngredientItem, NewIngredientModal, AlertDismissable },
+		mixins: [ toast ],
 		props: {
 			recipeID: Number,
-			ingredientsToShow: Array,
 		},
-		mixins: [ toast ],
 		data() {
 			return {
+				errAlert: {
+					timer: 0,
+					messages: [],
+					variant: ''
+				}
 			};
 		},
 		computed: {
 			...mapGetters({
 				recipe: 'recipe/currentRecipe',
-				isLoading: 'recipe/isLoading'
+				isLoading: 'recipe/isLoading',
+				ingredientsToShow: 'recipe/currentRecipeIngredients'
 			}),
 		},
 		methods: {
@@ -162,18 +175,35 @@
 					.then(() => this.createRecipeIngredients())
 					.then(() => {
 						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
-							self.$toast('Updated', 'Success', 'success');
+							self.$toast('Updated', 'Success', 'success')
 						}
 						else {
 							// TODO: fix this - need to redirect to edit-view & show toaster on save
 							// Look into this.$nextTick( () => { })
-							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID }, hash: '#edit-text' }, () => {
-								self.$toast('Updated', 'Success', 'success');
+							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID }, hash: '#edit-view' }, () => {
+								this.$nextTick(() => {
+									self.$toast('Updated', 'Success', 'success')
+								});
 							});
 						}
 					})
-					.catch((error) => this.$toastError(error, 'Error saving stuff'));
+					.catch((error) => {
+						// this.errAlert.messages = [
+						// 	'this is one error message thats not really an error',
+						// 	'how will these look in an alert up top?',
+						// 	'we shall see soon enough'
+						// ]
+						this.errAlert.messages.push('this is one error message thats not really an error')
+						this.errAlert.messages.push('how will these look in an alert up top?')
+						this.errAlert.messages.push('we shall see soon enough')
+						this.errAlert.timer = 10
+						this.errAlert.variant = "danger"
+						this.$toastError(error, 'Error saving stuff')
+					})
 			},
+			validateForm() {
+
+			}
 		},
 		mounted() {
 		}

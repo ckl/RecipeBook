@@ -35,16 +35,32 @@
         //     });
         // }
 		$toastError: function (response, message) {
-            let status, statusText, error, title;
-			
+            let [title, status, statusText, error] = this.$parseException(response, message);
+
+            console.error(`Error ${status}: ${statusText}: ${response}`);
+			console.error(response);
+            this.$bvToast.toast(error, {
+                title: title,
+                variant: 'danger',
+                autoHideDelay: 10000,
+            });
+        },
+		$parseException: function (response, message) {
+			let status, statusText, error, title;
+
 			if (response.response) {
 				let resp = response.response;
 				status = resp.status,
                 statusText = resp.statusText,
-				title = `${status} - ${statusText}`;
+				title = `${statusText} (Error ${status})`;
 				
-				if (resp.data.errors) {
-					error = resp.data.errors.id[0];
+				if (typeof resp.data === 'string') {
+					error = resp.data
+				}
+				else if (resp.data.errors) {
+					// error = resp.data.errors.id[0];
+					// TODO: get object from errors
+					error = resp.data.errors.toString()
 				}
 				else {
 					error = resp.data.title;
@@ -59,14 +75,8 @@
 				error += ` - ${message}`;
 			}
 
-            console.error(`Error ${status}: ${statusText}: ${response}`);
-			console.error(response);
-            this.$bvToast.toast(error, {
-                title: title,
-                variant: 'danger',
-                autoHideDelay: 10000,
-            });
-        }
+			return [ title, status, statusText, error ]
+		}
     }
 };
 

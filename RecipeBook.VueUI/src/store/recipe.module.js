@@ -1,5 +1,4 @@
-﻿import Vue from "vue";
-import { RecipeService } from "@/services/api.service"
+﻿import { RecipeService } from "@/services/api.service"
 import {
 	GET_RECIPE,
 	GET_RECIPES,
@@ -16,16 +15,19 @@ import {
 	GET_RECIPE_INGREDIENTS_END,
 	RECIPE_CREATE_END,
 	RECIPE_RESET_STATE_CALLED,
+	RECIPE_INGREDIENTS_CREATE_END
 } from "./mutations.type";
 
-const initialState = {
-	isLoading: false,
-	currentRecipe: {},
-	currentRecipeIngredients: [],
-	recipes: []
+const initialState = () => {
+	return {
+		isLoading: false,
+		currentRecipe: {},
+		currentRecipeIngredients: [],
+		recipes: []
+	}
 };
 
-export const state = { ...initialState };
+export const state = initialState();
 
 const getters = {
 	recipes(state) {
@@ -70,11 +72,12 @@ export const actions = {
 	async [RECIPE_UPDATE]({ state }) {
 		return RecipeService.updateRecipe(state.currentRecipe.recipeID, state.currentRecipe);
 	},
-	async [RECIPE_INGREDIENTS_CREATE]({ state }) {
+	async [RECIPE_INGREDIENTS_CREATE](context) {
 		state.currentRecipeIngredients.forEach((el, i, arr) => {
 			arr[i].recipeID = state.currentRecipe.recipeID;
 		});
-		return RecipeService.createRecipeIngredients(state.currentRecipeIngredients);
+		const { data } = await RecipeService.createRecipeIngredients(state.currentRecipeIngredients)
+		context.commit(RECIPE_INGREDIENTS_CREATE_END, data)
 	},
 	async [RECIPE_RESET_STATE]({ commit }) {
 		commit(RECIPE_RESET_STATE_CALLED);
@@ -98,10 +101,11 @@ export const mutations = {
 	[RECIPE_CREATE_END](state, data) {
 		state.currentRecipe = data;
 	},
+	[RECIPE_INGREDIENTS_CREATE_END](state, data) {
+		state.currentRecipeIngredients = data
+	},
 	[RECIPE_RESET_STATE_CALLED](state) {
-		for (let s in state) {
-			Vue.set(state, s, initialState[s]);
-		}
+		Object.assign(state, initialState())
 	}
 }
 

@@ -8,3 +8,4 @@ export const RECIPE_CREATE_END = "recipeCreateEnd";
 export const RECIPE_RESET_STATE_CALLED = "recipeResetStateCalled";
 export const INGREDIENT_CREATE_END = "ingredientCreateEnd";
 export const INGREDIENT_RESET_STATE_CALLED = "ingredientResetStateCalled"
+export const RECIPE_INGREDIENTS_CREATE_END = "recipeIngredientsCreateEnd"

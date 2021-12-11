@@ -3,22 +3,23 @@
 		<div class="row border p-4 my-3 bg-light rounded-3">
 			<h3>{{ currentRecipe.name }}</h3>
 
-			<b-tabs class="w-100">
-				<b-tab title="Text View">
-					<recipe-text-view :recipe-name="currentRecipe.name"
-									  :description="currentRecipe.description"
-									  :cook-time-minutes="currentRecipe.cookTimeMinutes"
-									  :notes="currentRecipe.notes"
-									  :ingredients-text="ingredientsText"
-									  :directions-text="currentRecipe.directions"></recipe-text-view>
-				</b-tab>
 
-				<b-tab title="Edit View">
-					<recipe-edit-view :recipe-id="currentRecipe.recipeID"
-									  :ingredients-to-show="ingredientsToShow"
-									  v-on:add-ingredient="ingredientsToShow.push({})"></recipe-edit-view>
-				</b-tab>
-			</b-tabs>
+			<b-card class="w-100">
+				<b-tabs v-model="tabIndex" class="w-100">
+					<b-tab title="Text View" href="text-view">
+						<recipe-text-view :recipe-name="currentRecipe.name"
+										:description="currentRecipe.description"
+										:cook-time-minutes="currentRecipe.cookTimeMinutes"
+										:notes="currentRecipe.notes"
+										:ingredients-text="ingredientsText"
+										:directions-text="currentRecipe.directions"></recipe-text-view>
+					</b-tab>
+
+					<b-tab title="Edit View" href="edit-view">
+							<recipe-edit-view :recipe-id="currentRecipe.recipeID"></recipe-edit-view>
+					</b-tab>
+				</b-tabs>
+			</b-card>
 		</div>
 	</div>
 </template>
@@ -41,13 +42,20 @@
 		mixins: [toast],
 		data() {
 			return {
+				tabIndex: 0,
+				tabs: ['#text-view', '#edit-view']
 			};
 		},
 		methods: {
 			...mapActions({
 				getRecipe: `recipe/${GET_RECIPE}`,
 				getRecipeIngredients: `recipe/${GET_RECIPE_INGREDIENTS}`
-			})
+			}),
+			tabCheck() {
+				this.$nextTick(() => {
+					this.tabIndex = this.tabs.findIndex(tab => tab === this.$route.hash)
+				})
+			}
 		},
 		computed: {
 			...mapGetters({
@@ -71,10 +79,11 @@
 		created() {
 		},
 		mounted() {
-			let id = this.$route.params.id;
+			let id = this.$route.params.id
+			this.tabCheck()
 			this.getRecipe(id)
 				.then(() => this.getRecipeIngredients(id))
-				.catch(error => this.$toastError(error, `Getting RecipeId ${id}`));
+				.catch(error => this.$toastError(error, `Getting RecipeId ${id}`))
 		},
 	}
 

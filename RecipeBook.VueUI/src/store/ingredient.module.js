@@ -1,5 +1,4 @@
-﻿import Vue from 'vue'
-import { IngredientService } from "@/services/api.service"
+﻿import { IngredientService } from "@/services/api.service"
 import {
 	GET_INGREDIENTS,
 	INGREDIENT_CREATE,
@@ -11,13 +10,16 @@ import {
 	INGREDIENT_CREATE_END,
 	INGREDIENT_RESET_STATE_CALLED
 } from './mutations.type';
-const initialState = {
-	isLoading: false,
-	ingredients: [],
-	currentIngredient: {}
-};
 
-export const state = { ...initialState };
+const initialState = () => {
+	return {
+		isLoading: false,
+		ingredients: [],
+		currentIngredient: {}
+	}
+}
+
+export const state = initialState()
 
 const getters = {
 	ingredients(state) {
@@ -61,9 +63,7 @@ export const mutations = {
 		state.currentIngredient = data;
 	},
 	[INGREDIENT_RESET_STATE_CALLED](state) {
-		for (let s in state) {
-			Vue.set(state, s, initialState[s]);
-		}
+		Object.assign(state, initialState())
 	}
 }
 

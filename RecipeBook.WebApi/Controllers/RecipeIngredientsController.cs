@@ -44,7 +44,7 @@ namespace RecipeBook.WebApi.Controllers
 			// TODO: fix this
 			if (ingredients == null || !ingredients.Any())
 			{
-				return BadRequest();
+				return BadRequest("No ingredients");
 			}
 
 			int recipeId = ingredients.FirstOrDefault().RecipeID;

@@ -31,6 +31,9 @@
 		created() {
 		},
 		mounted() {
+			this.$store.dispatch(`recipe/${RECIPE_RESET_STATE}`)
+				.then(() => { console.log('done')})
+				.catch((err) => { console.log(err)})
 		}
 	}
 

@@ -14,6 +14,7 @@
 						{{ recipe.name }}
 					</router-link>
 					- {{ recipe.description }}
+					<!-- TODO: add tags and cooktime -->
 				</div>
 			</div>
 		</div>
