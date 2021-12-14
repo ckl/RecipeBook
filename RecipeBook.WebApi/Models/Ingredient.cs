@@ -6,10 +6,10 @@ namespace RecipeBook.WebApi.Models
 	public class Ingredient
 	{
 		[Key]
-		public int IngredientID { get; set; }
+		public int IngredientId { get; set; }
 		public string Name { get; set; }
 		public string Notes { get; set; }
-		public DateTime? CreatedOnUTC { get; set; }
-		public DateTime? UpdatedOnUTC { get; set; }
+		public DateTime? CreatedOnUtc { get; set; }
+		public DateTime? UpdatedOnUtc { get; set; }
 	}
 }

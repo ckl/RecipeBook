@@ -23,7 +23,7 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				return await context.Ingredients.FirstOrDefaultAsync(x => x.IngredientID == id);
+				return await context.Ingredients.FirstOrDefaultAsync(x => x.IngredientId == id);
 			}
 		}
 
@@ -31,8 +31,8 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				ingredient.CreatedOnUTC = DateTime.UtcNow;
-				ingredient.UpdatedOnUTC = DateTime.UtcNow;
+				ingredient.CreatedOnUtc = DateTime.UtcNow;
+				ingredient.UpdatedOnUtc = DateTime.UtcNow;
 				context.Ingredients.Add(ingredient);
 				await context.SaveChangesAsync();
 
@@ -44,7 +44,7 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				ingredient.UpdatedOnUTC = DateTime.UtcNow;
+				ingredient.UpdatedOnUtc = DateTime.UtcNow;
 				context.Entry(ingredient).State = EntityState.Modified;
 				await context.SaveChangesAsync();
 			}

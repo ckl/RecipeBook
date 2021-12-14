@@ -70,11 +70,11 @@ export const actions = {
 		return data;
 	},
 	async [RECIPE_UPDATE]({ state }) {
-		return RecipeService.updateRecipe(state.currentRecipe.recipeID, state.currentRecipe);
+		return RecipeService.updateRecipe(state.currentRecipe.recipeId, state.currentRecipe);
 	},
 	async [RECIPE_INGREDIENTS_CREATE](context) {
 		state.currentRecipeIngredients.forEach((el, i, arr) => {
-			arr[i].recipeID = state.currentRecipe.recipeID;
+			arr[i].recipeId = state.currentRecipe.recipeId;
 		});
 		const { data } = await RecipeService.createRecipeIngredients(state.currentRecipeIngredients)
 		context.commit(RECIPE_INGREDIENTS_CREATE_END, data)

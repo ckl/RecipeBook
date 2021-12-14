@@ -25,9 +25,18 @@
     export default {
         name: 'AlertDismissable',
         props: {
-            messages: Array,
-            variant: String,
-			timer: Number,
+            messages: {
+				type: Array,
+				required: true
+			},
+            variant: {
+				type: String,
+				required: true
+			},
+			timer: {
+				type: Number,
+				required: true
+			}
         },
         data() {
             return {

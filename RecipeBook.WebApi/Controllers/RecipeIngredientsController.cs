@@ -26,12 +26,12 @@ namespace RecipeBook.WebApi.Controllers
 		}
 
 		// GET api/<RecipeIngredientsController>/5
-		[HttpGet("{recipeID}")]
+		[HttpGet("{recipeId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<IEnumerable<RecipeIngredientDto>>> Get(int recipeID)
+		public async Task<ActionResult<IEnumerable<RecipeIngredientDto>>> Get(int recipeId)
 		{
-			IEnumerable<RecipeIngredientDto> rtrn = await RecipeIngredientsDAL.Get(recipeID);
+			IEnumerable<RecipeIngredientDto> rtrn = await RecipeIngredientsDAL.Get(recipeId);
 			return Ok(rtrn);
 		}
 
@@ -47,9 +47,9 @@ namespace RecipeBook.WebApi.Controllers
 				return BadRequest("No ingredients");
 			}
 
-			int recipeId = ingredients.FirstOrDefault().RecipeID;
+			int recipeId = ingredients.FirstOrDefault().RecipeId;
 
-			if (ingredients.Any(x => x.RecipeID <= 0 || x.IngredientID <= 0))
+			if (ingredients.Any(x => x.RecipeId <= 0 || x.IngredientId <= 0))
 			{
 				throw new ArgumentException("recipeId cannot be 0");
 			}

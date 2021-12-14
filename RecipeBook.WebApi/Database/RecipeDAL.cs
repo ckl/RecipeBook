@@ -14,8 +14,8 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				recipe.CreatedOnUTC = DateTime.UtcNow;
-				recipe.UpdatedOnUTC = DateTime.UtcNow;
+				recipe.CreatedOnUtc = DateTime.UtcNow;
+				recipe.UpdatedOnUtc = DateTime.UtcNow;
 
 				context.Recipes.Add(recipe);
 				await context.SaveChangesAsync();
@@ -36,7 +36,7 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				return context.Recipes.FirstOrDefaultAsync(x => x.RecipeID == id);
+				return context.Recipes.FirstOrDefaultAsync(x => x.RecipeId == id);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace RecipeBook.WebApi.Database
 		{
 			using (var context = new MyDbContext())
 			{
-				recipe.UpdatedOnUTC = DateTime.UtcNow;
+				recipe.UpdatedOnUtc = DateTime.UtcNow;
 				context.Entry(recipe).State = EntityState.Modified;
 				await context.SaveChangesAsync();
 			}
@@ -55,7 +55,7 @@ namespace RecipeBook.WebApi.Database
 			using (var context = new MyDbContext())
 			{
 				// /first remove the ingredients
-				var ingredients = context.RecipeIngredients.Where(x => x.RecipeID == recipeId);
+				var ingredients = context.RecipeIngredients.Where(x => x.RecipeId == recipeId);
 
 				foreach (var ingredient in ingredients)
 				{

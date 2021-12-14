@@ -9,13 +9,13 @@
 			<span class="h3">Recipes</span>
 			<button @click="$router.push('/new-recipe')" class="btn btn-primary float-right">New</button>
 			<div class="list-group mt-3">
-				<div class="list-group-item" v-for="recipe in recipes" :key="recipe.recipeID">
-					<router-link :to="{ name: 'Recipe', params: { id: recipe.recipeID }}">
-						{{ recipe.name }}
-					</router-link>
-					- {{ recipe.description }}
-					<!-- TODO: add tags and cooktime -->
-				</div>
+				<b-table striped hover :items="recipes" :fields="fields">
+					<template #cell(name)="data">
+						<router-link :to="{ name: 'Recipe', params: { id: data.item.recipeId }}">
+							{{ data.item.name }}
+						</router-link>	
+					</template>
+				</b-table>
 			</div>
 		</div>
 	</div>
@@ -31,7 +31,13 @@
 		mixins: [toast],
 		data() {
 			return {
-			};
+				fields: [
+					{ key: 'recipeId', sortable: true },
+					{ key: 'name', sortable: true },
+					{ key: 'description' },
+					{ key: 'cookTimeMinutes', label: 'Cook Time (minutes)', sortable: true }
+				]
+			}
 		},
 		methods: {
 			...mapActions({

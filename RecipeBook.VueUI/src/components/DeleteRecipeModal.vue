@@ -16,9 +16,14 @@
         name: 'DeleteRecipeModal',
         mixins: [toast],
         props: {
-            recipeID: Number,
-            recipeName: String,
-			errorList: Array,
+            recipeId: {
+				type: Number,
+				required: true
+			},
+            recipeName: {
+				type: String,
+				required: true
+			}
         },
         data() {
             return {
@@ -66,8 +71,7 @@
             deleteRecipe () {
                 console.log(process.env);
 
-                // TODO: using params is a hack. figure out why this.recipeID is undefined
-                return axios.delete(process.env.VUE_APP_RecipeBookApi + 'Recipes/' + this.$route.params.id)
+                return axios.delete(process.env.VUE_APP_RecipeBookApi + 'Recipes/' + this.recipeId)
                     .then(() => {
                         this.$router.push('Recipes')
                     });

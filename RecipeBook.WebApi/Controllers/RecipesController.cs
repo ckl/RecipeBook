@@ -46,7 +46,7 @@ namespace RecipeBook.WebApi.Controllers
 		public async Task<ActionResult<Recipe>> Post(Recipe recipe)
 		{
 			Recipe newRecipe = await RecipeDAL.Insert(recipe);
-			return CreatedAtAction(nameof(Post), newRecipe.RecipeID, newRecipe);
+			return CreatedAtAction(nameof(Post), newRecipe.RecipeId, newRecipe);
 		}
 
 		// PUT api/<ValuesController>/5
@@ -55,7 +55,7 @@ namespace RecipeBook.WebApi.Controllers
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> Put(int id, Recipe recipe)
 		{
-			if (id != recipe.RecipeID)
+			if (id != recipe.RecipeId)
 			{
 				return BadRequest();
 			}

@@ -16,7 +16,7 @@
 					</b-tab>
 
 					<b-tab title="Edit View" href="edit-view">
-							<recipe-edit-view :recipe-id="currentRecipe.recipeID"></recipe-edit-view>
+							<recipe-edit-view :recipe-id="currentRecipe.recipeId"></recipe-edit-view>
 					</b-tab>
 				</b-tabs>
 			</b-card>

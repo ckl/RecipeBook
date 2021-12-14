@@ -3,9 +3,9 @@
         <b-row class="my-1">
             <b-input-group>
                 <template #prepend>
-                    <b-form-select v-model="ingredientDetails.ingredientID"
+                    <b-form-select v-model="ingredientDetails.ingredientId"
                                    :options="ingredientList"
-                                   value-field="ingredientID"
+                                   value-field="ingredientId"
                                    text-field="name"></b-form-select>
                 </template>
 

@@ -35,14 +35,14 @@ namespace RecipeBook.WebApi.Controllers
 		public async Task<ActionResult<Ingredient>> Post(Ingredient ingredient)
 		{
 			Ingredient newIngredient = await IngredientDAL.Post(ingredient);
-			return CreatedAtAction(nameof(Get), newIngredient.IngredientID, newIngredient);
+			return CreatedAtAction(nameof(Get), newIngredient.IngredientId, newIngredient);
 		}
 
 		// PUT api/<IngredientController>/5
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put(int id, Ingredient ingredient)
 		{
-			if (id != ingredient.IngredientID)
+			if (id != ingredient.IngredientId)
 			{
 				return BadRequest();
 			}

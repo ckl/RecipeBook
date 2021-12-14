@@ -10,12 +10,12 @@ namespace RecipeBook.WebApi.Database
 	// TODO: make this a singleton
 	public static class RecipeIngredientsDAL
 	{
-		public async static Task Upsert(int recipeID, IEnumerable<RecipeIngredient> ingredients)
+		public async static Task Upsert(int recipeId, IEnumerable<RecipeIngredient> ingredients)
 		{
 			using (var context = new MyDbContext())
 			{
 				// TODO: rework this
-				var existing = context.RecipeIngredients.Where(x => x.RecipeID == recipeID);
+				var existing = context.RecipeIngredients.Where(x => x.RecipeId == recipeId);
 				foreach (var i in existing) {
 					context.Entry(i).State = EntityState.Deleted;
 				}
@@ -25,8 +25,8 @@ namespace RecipeBook.WebApi.Database
 				{
 					context.RecipeIngredients.Add(new RecipeIngredient
 					{
-						IngredientID = i.IngredientID,
-						RecipeID = recipeID,
+						IngredientId = i.IngredientId,
+						RecipeId = recipeId,
 						Quantity = i.Quantity,
 						Notes = i.Notes
 					});
@@ -35,21 +35,21 @@ namespace RecipeBook.WebApi.Database
 			}
 		}
 
-		public async static Task<IEnumerable<RecipeIngredientDto>> Get(int recipeID)
+		public async static Task<IEnumerable<RecipeIngredientDto>> Get(int recipeId)
 		{
 			using (var context = new MyDbContext())
 			{
 				IQueryable<RecipeIngredientDto> query =  
 					(from i in context.Ingredients
 					join ri in context.RecipeIngredients
-					on i.IngredientID equals ri.IngredientID
-					where ri.RecipeID == recipeID
+					on i.IngredientId equals ri.IngredientId
+					where ri.RecipeId == recipeId
 					select new RecipeIngredientDto
 					{
-						IngredientID = i.IngredientID,
+						IngredientId = i.IngredientId,
 						Name = i.Name,
 						Notes = ri.Notes,
-						RecipeID = recipeID,
+						RecipeId = recipeId,
 						Quantity = ri.Quantity
 					});
 

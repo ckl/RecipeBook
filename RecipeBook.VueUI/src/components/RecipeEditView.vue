@@ -9,8 +9,8 @@
 			<b-container fluid>
 				<b-row class="my-1">
 					<b-col>
-						<span class="float-right" v-if="recipe.recipeID">
-							<delete-recipe-modal :recipe-id="recipe.recipeID"
+						<span class="float-right" v-if="recipe.recipeId">
+							<delete-recipe-modal :recipe-id="recipe.recipeId"
 												 :recipe-name="recipe.name">
 							</delete-recipe-modal>
 						</span>
@@ -62,7 +62,7 @@
 					<b-col>
 						<ul>
 							<li is="ingredient-item" v-for="(ingredient, index) in ingredientsToShow"
-								:key="ingredient.ingredientID"
+								:key="ingredient.ingredientId"
 								:item="ingredient"
 								:index="index"
 								:value="ingredient.name"
@@ -122,7 +122,6 @@ import AlertDismissable from './Alert.Dismissable.vue'
 		components: { DeleteRecipeModal, IngredientItem, NewIngredientModal, AlertDismissable },
 		mixins: [ toast ],
 		props: {
-			recipeID: Number,
 		},
 		data() {
 			return {
@@ -146,27 +145,33 @@ import AlertDismissable from './Alert.Dismissable.vue'
 			}),
 			clickSaveRecipe() {
 				// TODO: move form validation somewhere else
-				let errors = [];
+				this.errAlert.messages = []
 				let ingredients = this.ingredientsToShow.filter(x => {
-					return x.ingredientID && x.ingredientID > 0;
+					return x.ingredientId && x.ingredientId > 0;
 				});
+
+				if (this.recipe.name.trim() === '') {
+					this.errAlert.messages.push('Missing Recipe Name')
+				}
+
+				if (!this.recipe.cookTimeMinutes) {
+					this.errAlert.messages.push('Missing Cook time')
+				}
 
 				ingredients.forEach(x => {
 					if (!x.quantity) {
-						errors.push({ ingredientID: x.ingredientID, message: `Missing quantity for ${x.name}` });
+						this.errAlert.messages.push(`Missing quantity for ${x.name}`);
 					}
 				});
 
-				if (errors.length > 0) {
-					let msg = errors.join('\r\n');
-					this.$toast(msg, 'Bad input', 'warn');
+				if (this.errAlert.messages.length > 0) {
+					this.errAlert.timer = 10
+					this.errAlert.variant = "danger"
 					return;
 				}
 
-				this.statusMsg = 'Loading...';
-
 				let self = this;
-				let action = typeof this.recipe.recipeID === 'undefined' ?
+				let action = typeof this.recipe.recipeId === 'undefined' ?
 					`recipe/${RECIPE_CREATE}` :
 					`recipe/${RECIPE_UPDATE}`
 
@@ -174,13 +179,13 @@ import AlertDismissable from './Alert.Dismissable.vue'
 					.dispatch(action)
 					.then(() => this.createRecipeIngredients())
 					.then(() => {
-						if (parseInt(this.$route.params.id) === self.recipe.recipeID) {
+						if (parseInt(this.$route.params.id) === self.recipe.recipeId) {
 							self.$toast('Updated', 'Success', 'success')
 						}
 						else {
 							// TODO: fix this - need to redirect to edit-view & show toaster on save
 							// Look into this.$nextTick( () => { })
-							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeID }, hash: '#edit-view' }, () => {
+							this.$router.push({ name: 'Recipe', params: { id: self.recipe.recipeId }, hash: '#edit-view' }, () => {
 								this.$nextTick(() => {
 									self.$toast('Updated', 'Success', 'success')
 								});
@@ -188,14 +193,6 @@ import AlertDismissable from './Alert.Dismissable.vue'
 						}
 					})
 					.catch((error) => {
-						// this.errAlert.messages = [
-						// 	'this is one error message thats not really an error',
-						// 	'how will these look in an alert up top?',
-						// 	'we shall see soon enough'
-						// ]
-						this.errAlert.messages.push('this is one error message thats not really an error')
-						this.errAlert.messages.push('how will these look in an alert up top?')
-						this.errAlert.messages.push('we shall see soon enough')
 						this.errAlert.timer = 10
 						this.errAlert.variant = "danger"
 						this.$toastError(error, 'Error saving stuff')
