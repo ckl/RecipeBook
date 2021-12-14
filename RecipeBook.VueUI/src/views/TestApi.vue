@@ -1,6 +1,9 @@
 <template>
-  <div class="about">
-    <h1>This is a testy test</h1>
+  <div class="container">
+    <div class="p-4 my-3 bg-light rounded-3">
+		<h2>Testing page</h2>
+		<p>Can test some stuff here</p>
+	</div>
   </div>
 </template>
 

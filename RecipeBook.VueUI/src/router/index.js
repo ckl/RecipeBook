@@ -39,6 +39,10 @@ const routes = [
 		path: '/TestApi',
 		name: 'TestApi',
 		component: () => import('../views/TestApi.vue')
+	},
+	{
+		path: '/*',
+		component: () => import('../views/NotFound.vue')
 	}
 ]
 

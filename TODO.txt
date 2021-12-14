@@ -20,7 +20,6 @@
 - use lodash with vuex for updating nested objects
 	- https://stackoverflow.com/questions/51672475/how-to-properly-deal-with-editable-complex-object-nested-with-vuex
 - only enable Save button when a field becomes dirty
-- search box above the recipes
 - 404 error pages
 - card view / list view for recipes
 
