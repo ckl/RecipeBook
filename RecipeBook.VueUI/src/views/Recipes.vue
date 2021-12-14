@@ -6,10 +6,16 @@
 		</div>
 
 		<div class="p-4 my-3 bg-light rounded-3">
-			<span class="h3">Recipes</span>
-			<button @click="$router.push('/new-recipe')" class="btn btn-primary float-right">New</button>
+			<span class="d-flex justify-content-between">
+				<b-form-input v-model="filterRecipe" placeholder="Search..." class="float-center col-5"></b-form-input>
+				<button @click="$router.push('/new-recipe')" class="btn btn-primary col-1">New</button>
+			</span>
 			<div class="list-group mt-3">
-				<b-table striped hover :items="recipes" :fields="fields">
+				<b-table striped hover 
+					:items="recipes" 
+					:fields="fields" 
+					:filter="filterRecipe" 
+					:filter-included-fields="['name', 'description']">
 					<template #cell(name)="data">
 						<router-link :to="{ name: 'Recipe', params: { id: data.item.recipeId }}">
 							{{ data.item.name }}
@@ -31,6 +37,7 @@
 		mixins: [toast],
 		data() {
 			return {
+				filterRecipe: '',
 				fields: [
 					{ key: 'recipeId', sortable: true },
 					{ key: 'name', sortable: true },

@@ -67,6 +67,7 @@
 								:index="index"
 								:value="ingredient.name"
 								:ingredient-details="ingredient"
+								:class="{'error-border': ingredient.hasErrors}"
 								v-on:remove="ingredientsToShow.splice(index, 1)">
 							</li>
 						</ul>
@@ -150,7 +151,11 @@ import AlertDismissable from './Alert.Dismissable.vue'
 					return x.ingredientId && x.ingredientId > 0;
 				});
 
-				if (this.recipe.name.trim() === '') {
+				if (ingredients.length === 0) {
+					this.errAlert.messages.push('Recipe has no ingredients')
+				}
+
+				if (!this.recipe.name || this.recipe.name.trim() === '') {
 					this.errAlert.messages.push('Missing Recipe Name')
 				}
 
@@ -158,11 +163,22 @@ import AlertDismissable from './Alert.Dismissable.vue'
 					this.errAlert.messages.push('Missing Cook time')
 				}
 
-				ingredients.forEach(x => {
-					if (!x.quantity) {
-						this.errAlert.messages.push(`Missing quantity for ${x.name}`);
+				let missingIngredient = false
+				ingredients.forEach((el, i, arr) => {
+					arr[i].hasErrors = false
+					if (!el.quantity) {
+						arr[i].hasErrors = true
+						missingIngredient = true
 					}
 				});
+				// TODO: ingredient names not being populated in el.name above. fix it
+				if (missingIngredient) {
+					this.errAlert.messages.push('Missing ingredient information')
+				}
+
+				if (!this.recipe.directions) {
+					this.errAlert.messages.push('Missing cooking directions')
+				}
 
 				if (this.errAlert.messages.length > 0) {
 					this.errAlert.timer = 10
@@ -212,6 +228,10 @@ import AlertDismissable from './Alert.Dismissable.vue'
 	ul {
 		list-style-type: none;
 		padding: 0;
+	}
+
+	.error-border {
+		border: 1px solid red;
 	}
 </style>
 
